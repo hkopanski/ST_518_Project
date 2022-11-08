@@ -1,0 +1,42 @@
+---
+title: "marks_proj_work"
+author: "Mark Austin"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+#using Halid's code to keep data frame consistent
+library(tidyverse)
+df_eff <- read_csv('effervescence.csv', col_types = 'fffnnn')
+df_eff %>% head()
+
+#model with stirred as block effect without interaction 
+aov_block_eff <- aov(lm_block_eff <- lm(Time ~ Brand * Temp + Stirred, data = df_eff))
+summary(lm_block_eff)
+summary(aov_block_eff)
+
+plot(aov_block_eff)
+
+library(olsrr)
+ols_plot_cooksd_chart(lm_block_eff)
+
+
+#adding Halid's code to see how full 3 factor interaction compares
+aov_eff <- aov(lm_eff <- lm(Time ~ Brand * Temp * Stirred, data = df_eff))
+summary(lm_eff)
+summary(aov_eff)
+
+plot(aov_eff)
+
+#adding Cook's D here
+ols_plot_cooksd_chart(lm_eff)
+
+```
+
+
