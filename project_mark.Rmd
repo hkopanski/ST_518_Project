@@ -10,11 +10,29 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-```{r}
+## Exploratory Analysis  
+```{r message=FALSE, warning=FALSE}
 #using Halid's code to keep data frame consistent
 library(tidyverse)
 df_eff <- read_csv('effervescence.csv', col_types = 'fffnnn')
 df_eff %>% head()
+
+##3 factor interaction plot based on HW7 code
+
+with(df_eff%>%filter(Stirred=="yes"),interaction.plot(Temp,Brand,Time,
+            type="b", pch=19, col=c(2,4), ylab="mean Quality",
+           main="Mean Time vs. Brand: Stirred = yes"))
+
+with(df_eff%>%filter(Stirred=="no"),interaction.plot(Temp,Brand,Time,
+          type="b", pch=19, col=c(2,4), ylab="mean Quality",
+          main="Mean Time vs. Brand: Stirred = no"))
+
+
+```
+From the three factor interaction plots, does the 3 factor interaction look obvious here?  The brand by temp interaction is clear.
+
+## Analysis and Results  
+```{r message=TRUE, warning=TRUE}
 
 #model with stirred as block effect without interaction 
 aov_block_eff <- aov(lm_block_eff <- lm(Time ~ Brand * Temp + Stirred, data = df_eff))
