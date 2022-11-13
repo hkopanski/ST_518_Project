@@ -1,0 +1,59 @@
+---
+#title: "Contrast Analysis"
+#author: "Halid Kopanski"
+#date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r, echo=FALSE, message=FALSE, error=FALSE}
+library(tidyverse)
+library(car)
+library(emmeans)
+library(lme4)
+df_eff <- read_csv('effervescence.csv', col_types = 'fffnnn')
+```
+
+
+```{r, echo = FALSE, message = FALSE, error = FALSE}
+aov_eff <- aov(lm_eff <- lm(Time ~ Brand * Temp * Stirred, data = df_eff))
+
+#print(Anova(lm(Time ~ Brand * Temp * Stirred, data = df_eff), type = 3))
+```
+
+
+
+```{r, echo = FALSE, message = FALSE, error = FALSE}
+means_eff <- emmeans(aov_eff, specs = c('Brand', 'Temp', 'Stirred'))
+#summary(means_eff)
+```
+
+```{r, echo = FALSE, message = FALSE, error = FALSE}
+cont_str_brd <-
+contrast(means_eff, list(stirred = c(1/6, 1/6, 1/6, 1/6, 1/6, 1/6, -1/6, -1/6, -1/6, -1/6, -1/6, -1/6),
+                         branding = rep(c(1/6,-1/6), 6)
+                         )
+         )
+
+cont_strbrd <-
+
+contrast(means_eff, list(stirredbrand = c(1/3, 0,  1/3, 0, 1/3, 0, -1/3, 0, -1/3, 0, -1/3, 0),
+                         stirredstore = c(0, 1/3, 0,  1/3, 0, 1/3, 0, -1/3, 0, -1/3, 0, -1/3)
+                         )
+         )
+cont_temp <- 
+contrast(means_eff, list(temp6_23 = c(1/4, 1/4, -1/4, -1/4, 0, 0, 1/4, 1/4, -1/4, -1/4, 0, 0),
+                         temp6_40 = c(1/4, 1/4, 0, 0, -1/4, -1/4, 1/4, 1/4, 0, 0, -1/4, -1/4),
+                         temp23_40 = c(0, 0, 1/4, 1/4, -1/4, -1/4, 0, 0, 1/4, 1/4, -1/4, -1/4)
+                         )
+         )
+knitr::kable(confint(cont_str_brd))
+knitr::kable(confint(cont_strbrd))
+knitr::kable(confint(cont_temp))
+```
+
+Conducting a linear contrast analysis on each of the explanatory variables reveals that there are significant differences between groups based on factors. In the first case, we contrasted the means of stirred versis not strirred. Here the difference in means is -2.41 with an upper 95% confidence limit of -3.04 and a lower 95% CI limit of -1.78. In other words, on average stirring medicince reduces dissolving time by between 3.04 and 1.78 minutes regrardles of brand or temperature. When looking only at brand, name brand dissovling times were on average between 4.71 and 5.97 (95% CI) minutes slower than store brand. Since neither of the intervals contained zero we can conclude that there is a difference between brands and between the presence of stirring.
+
+While significant for both store and name brands, stirring had more of an impact to dissolving times for name brand than it did for the store brand. Stirring reduced name brand dissolving times by 2.83 and 4.61 minutes whereas for the store brand that interval was 0.22 and 2 minutes.
+
+A similar analysis was completed on the three levels of temperature........ 
+
