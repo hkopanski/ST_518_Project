@@ -44,6 +44,23 @@ plot(aov_block_eff)
 library(olsrr)
 ols_plot_cooksd_chart(lm_block_eff)
 
+#added covariate Order model with stirred as block effect without interaction 
+aov_block_order_eff <- aov(lm_block_order_eff <- lm(Time ~ Brand * Temp + Stirred + Order, data = df_eff))
+summary(lm_block_order_eff)
+summary(aov_block_order_eff)
+library(car)
+Anova(aov_block_order_eff, type=3) # type 3 SS
+plot(lm_block_order_eff)
+ols_plot_cooksd_chart(lm_block_order_eff)
+
+
+#added covariate Order to model with 3 factor interaction
+aov_three_order_eff <- aov(lm_three_order_eff <- lm(Time ~ Brand * Temp*Stirred + Order, data = df_eff))
+summary(lm_three_order_eff)
+summary(aov_three_order_eff)
+library(car)
+Anova(aov_three_order_eff, type=3) # type 3 SS
+plot(lm_three_order_eff)
 
 #adding Halid's code to see how full 3 factor interaction compares
 aov_eff <- aov(lm_eff <- lm(Time ~ Brand * Temp * Stirred, data = df_eff))
