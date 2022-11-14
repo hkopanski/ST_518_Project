@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: pdf_document
 ---
 
-```{r, echo=FALSE, message=FALSE, error=FALSE}
+```{r echo=FALSE, error=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(car)
 library(emmeans)
@@ -40,6 +40,21 @@ df_eff %>% ggplot() + geom_boxplot(aes(fill = Brand, y = Time, x = Temp)) +
 ```
 
 Immediately it can be seen that stirring seems to increase the variance of the name brand medicine. Also, an interaction effect between temperature and brand can be deduced if lines are drawn through the centers of the boxes. We can also see that temperature has an inverse effect on dissolving times whether stirring is present or not. Stirring might have an additive effect regardless of temperature. 
+
+```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
+##3 factor interaction plot based on HW7 code
+
+with(df_eff%>%filter(Stirred=="yes"),interaction.plot(Temp,Brand,Time,
+            type="b", pch=19, col=c(2,4), ylab="mean Time",
+           main="Mean Time vs. Temp: Stirred = yes"))
+
+with(df_eff%>%filter(Stirred=="no"),interaction.plot(Temp,Brand,Time,
+          type="b", pch=19, col=c(2,4), ylab="mean Time",
+          main="Mean Time vs. Temp: Stirred = no"))
+```
+
+The possible interaction between brand and temperature becomes even more noticeable in the preceding three factor interaction plots.  Specifically the brand and temperature interaction can be seen with increasing temperature the store brand line has a more negative slope than the name brand line.  In addition, there might be a slight three factor interaction between brand, temperature, and stirring as the name and store brand lines appear to be closer together in the stirred=yes plot than the stirred=no plot.  
+
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
 aov_eff <- aov(lm_eff <- lm(Time ~ Brand * Temp * Stirred, data = df_eff))
