@@ -17,7 +17,7 @@ df_eff <- read_csv('effervescence.csv', col_types = 'fffnnn')
 
 # Exploratory Analysis  
 
-###   Data Prepartion
+###   Data Preparation
 
 The Effervescent Experiment data contains 48 rows, 6 columns and no missing data points.  As a result of having intact data there will not be a need for data remediation.
 
@@ -33,6 +33,7 @@ df_eff %>% head()
 # Time, Generalized
 summary(df_eff$Time)
 
+#Time, by Brand
 df_eff %>%
   group_by(Brand) %>%
   summarize(min = min(Time),
@@ -42,6 +43,7 @@ df_eff %>%
             q3 = quantile(Time, 0.75),
             max = max(Time))
 
+#Time, by Temp
 df_eff %>%
   group_by(Temp) %>%
   summarize(min = min(Time),
@@ -51,6 +53,7 @@ df_eff %>%
             q3 = quantile(Time, 0.75),
             max = max(Time))
 
+#Time, by Stirred
 df_eff %>%
   group_by(Stirred) %>%
   summarize(min = min(Time),
@@ -75,7 +78,7 @@ All of the data falls within two standard deviations of the mean and there does 
 ```{r message=FALSE, warning=FALSE}
 sd(df_eff$Time)
 ```
-<add Cooks D discussion/check here as well. 
+< expand using Cooks D, further outlier discussion/check here. >
 
 ####    Normality
 \
@@ -95,7 +98,7 @@ hist(df_eff$Time)
 
 ####   Homogenniety of Variance 
 
-< homoscadascity visual illustration> 
+< homoscadascity visual illustration > 
 
 ####  Homogenity of covariances
 
