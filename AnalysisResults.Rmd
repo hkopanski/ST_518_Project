@@ -1,0 +1,55 @@
+---
+title: "Analysis and Results"
+author: ""
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Analysis and Results
+
+### Order as a Model Covariate  
+We next consider the run order variable Order as a covariate.  We first considered the relationship between Order and the response Time.  
+```{r Time and Order Plot, message=FALSE, warning=FALSE}
+#using Halid's read_csv code to keep data frame consistent
+library(tidyverse)
+df_eff <- read_csv('effervescence.csv', col_types = 'fffnnn')
+
+
+##get correlation to add to plot
+correlation <- cor(df_eff$Time,df_eff$Order)
+
+##construct scatter plot of Time by Order with fitted SLR line
+## add correlation result to this plot
+gOrderTime <- ggplot(df_eff,aes(x=Order,y=Time))
+gOrderTime + geom_point() +geom_smooth(method=lm,col="Red",se = F) + 
+  geom_text(x=35,y=63,size=6, label = paste0("Correlation = ",round(correlation, 2))) + 
+  labs(title = "Scatter Plot of Time by Order with Fitted \nLinear=Red and Quadratic=Blue Regression Lines") +  
+  geom_smooth(method=lm,formula = y~poly(x,2),col="Blue",se=F)
+```
+
+The preceding scatter plot does shows only a weak positive linear relationship between Order and Time with a small correlation=0.2.  However, the plot does show a plausible quadratic relationship between Order and Time.  
+```{r}
+##Create new Order^2 variable
+df_eff$Order2<-df_eff$Order^2
+
+#Fit quadratic model with order and order^2
+slrOrderQ<-lm(Time~Order+ Order2,data = df_eff)
+summary(slrOrderQ)
+```
+A fitted quadratic regression model was significant with overall overall F test p-value=0.013 and all coefficients having p-values less than .05.  Thus, we decided to include both Order and Order^2 as additive covariates in the following full three factor interaction model.  
+
+```{r message=FALSE, warning=FALSE}
+#added covariates Order to model with 3 factor interaction
+aov_three_order_eff <- aov(lm_three_order_eff <- lm(Time ~ Brand*Temp*Stirred + Order+ Order2, data = df_eff))
+summary(lm_three_order_eff)
+library(car)
+Anova(aov_three_order_eff, type=3) # type 3 SS
+```
+
+
+
+
