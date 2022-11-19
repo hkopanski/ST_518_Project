@@ -161,11 +161,14 @@ A similar analysis was completed on the three levels of temperature........
 Three models were developed and analyzed for this paper:
 
 $Model~1: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} + (\alpha \gamma)_{ik} + (\gamma \beta)_{jk} + (\alpha \beta \gamma)_{ijk} + \epsilon_{ijkl}$  
-$Model~2: Y_{ijk} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} + \epsilon_{ijk}$  
-$Model~3: Y_{ijk} = \mu + \alpha_i + \beta_j + \gamma_k + \epsilon_{ijk}$  
+$Model~2: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} + \epsilon_{ijkl}$  
+$Model~3: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + \epsilon_{ijkl}$  
 
+Where $\alpha$ is brand effect, $\beta$ is temperature effect, $\gamma$ is stir effect. i, j, k are `r 1:2`, `r 1:3`, and `r 1:2`, respectively. $\epsilon_{ijkl}$ is assumed to be normally distributed with a $\mu$ of 0 and a variance of $\sigma^2_\epsilon$. $\mu$ is the overall mean and is an unknown value.  
 
 ```{r, echo = FALSE, message = FALSE, error = FALSE}
+par(mfrow=c(2,2), mar = c(5,5,2,2))
+plot(aov_eff)
 knitr::kable(summary(aov_eff)[[1]], 'simple', caption = 'Model 1 ANOVA Results')
 ```
 
@@ -174,22 +177,30 @@ knitr::kable(summary(aov_eff)[[1]], 'simple', caption = 'Model 1 ANOVA Results')
 aov_block_eff <- aov(lm_block_eff <- lm(Time ~ Brand * Temp + Stirred, data = df_eff))
 #summary(lm_block_eff)
 knitr::kable(summary(aov_block_eff)[[1]], caption = "Model 2: ANOVA Table")
+par(mfrow=c(2,2), mar = c(5,5,2,2))
 plot(aov_block_eff)
 ols_plot_cooksd_chart(lm_block_eff)
+```
 
+```{r,  echo = FALSE, message = FALSE, error = FALSE}
 #added covariate Order model with stirred as block effect without interaction 
 aov_block_order_eff <- aov(lm_block_order_eff <- lm(Time ~ Brand * Temp + Stirred + Order, data = df_eff))
 #summary(lm_block_order_eff)
 knitr::kable(summary(aov_block_order_eff)[[1]], caption = "Model 3: ANOVA Table")
 Anova(aov_block_order_eff, type=3) # type 3 SS
+par(mfrow=c(2,2), mar = c(5,5,2,2))
 plot(lm_block_order_eff)
 ols_plot_cooksd_chart(lm_block_order_eff)
 #added covariate Order to model with 3 factor interaction
+```
 
-aov_three_order_eff <- aov(lm_three_order_eff <- lm(Time ~ Brand * Temp*Stirred + Order, data = df_eff))
-summary(lm_three_order_eff)
-summary(aov_three_order_eff)
+
+```{r,  echo = FALSE, message = FALSE, error = FALSE}
+aov_three_order_eff <- aov(lm_three_order_eff <- lm(Time ~ Brand * Temp * Stirred + Order, data = df_eff))
+#summary(lm_three_order_eff)
+knitr::kable(summary(aov_three_order_eff)[[1]], 'simple', caption = "Model 4 ANOVA Table")
 Anova(aov_three_order_eff, type=3) # type 3 SS
+par(mfrow=c(2,2), mar = c(5,5,2,2))
 plot(lm_three_order_eff)
 ```
 
@@ -199,3 +210,8 @@ plot(lm_three_order_eff)
 
 ## Conclusion
 
+\newpage
+
+## Appendix: Code
+```{r, ref.label=knitr::all_labels(),echo=TRUE,eval=FALSE}
+```
