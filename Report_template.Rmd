@@ -236,19 +236,19 @@ aov_three_order_eff <- aov(lm_three_order_eff <- lm(Time ~ Brand * Temp * Stirre
 ```{r, echo =  FALSE, message=FALSE, error=FALSE}
 knitr::kable(df_stats, caption = "Data Summary Table")
 knitr::kable(summary(means_eff), caption = "Least Squares Means")
-knitr::kable(confint(cont_str_brd), caption = "Constrast Stirred and Brand")
-knitr::kable(confint(cont_strbrd), caption = "Constrast Stirred versus Brand")
-knitr::kable(confint(cont_temp), caption = "Constrast Temperatures")
+knitr::kable(confint(cont_str_brd), caption = "Contrast Stirred and Brand")
+knitr::kable(confint(cont_strbrd), caption = "Contrast Stirred versus Brand")
+knitr::kable(confint(cont_temp), caption = "Contrast Temperatures")
 
 knitr::kable(summary(aov_eff)[[1]], 'simple', caption = 'Model 1: ANOVA Table')
 par(mfrow=c(2,2), mar = c(5,5,2,2))
 plot(aov_eff)
 
-knitr::kable(summary(aov_block_eff)[[1]], caption = "Model 2: ANOVA Table")
+knitr::kable(summary(aov_block_eff)[[1]], 'simple' , caption = "Model 2: ANOVA Table")
 par(mfrow=c(2,2), mar = c(5,5,2,2))
 plot(aov_block_eff)
 
-knitr::kable(summary(aov_block_eff_noint)[[1]], caption = "Model 4: ANOVA Table")
+knitr::kable(summary(aov_block_eff_noint)[[1]], 'simple', caption = "Model 4: ANOVA Table")
 par(mfrow=c(2,2), mar = c(5,5,2,2))
 plot(aov_block_eff_noint)
 
