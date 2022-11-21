@@ -94,6 +94,7 @@ The possible interaction between brand and temperature becomes even more noticea
 
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(7,3), dpi=250}
+#model1
 aov_eff <- aov(lm_eff <- lm(Time ~ Brand * Temp * Stirred, data = df_eff))
 
 #cooksD_values <- cooks.distance(lm_eff)
@@ -181,7 +182,10 @@ $Model~6: Y_{ijk} = \mu + \alpha_i + B_j + \gamma_k + (\alpha B)_{ij} + \epsilon
 Where temperature is random and brand is fixed.
 
 With order as a factor:  
-$Model~7: Y_{ijklm} = \mu + \alpha_i + \beta_j + \gamma_k + \nu_l + (\alpha \beta)_{ij} + (\alpha \gamma)_{ik} + (\gamma \beta)_{jk} + (\alpha \beta \gamma)_{ijk} + \epsilon_{ijklm}$  
+$Model~7: Y_{ijklm} = \mu + \alpha_i + \beta_j + \gamma_k + \nu_l + (\alpha \beta)_{ij} + \epsilon_{ijklm}$  
+Similar to model 2, but with an introduced effect, $\nu$, to represent order.
+
+$Model~8: Y_{ijklm} = \mu + \alpha_i + \beta_j + \gamma_k + \nu_l + (\alpha \beta)_{ij} + (\alpha \gamma)_{ik} + (\gamma \beta)_{jk} + (\alpha \beta \gamma)_{ijk} + \epsilon_{ijklm}$  
 Similar to model 1, but with an introduced effect, $\nu$, to represent order.
 
 ```{r, echo = FALSE, message = FALSE, error = FALSE}
@@ -191,8 +195,10 @@ Similar to model 1, but with an introduced effect, $\nu$, to represent order.
 ```
 
 ```{r,  echo = FALSE, message = FALSE, error = FALSE}
-#model with stirred as block effect without interaction 
+#model with stirred as block effect without interaction
+#model2
 aov_block_eff <- aov(lm_block_eff <- lm(Time ~ Brand * Temp + Stirred, data = df_eff))
+#model3
 aov_block_eff_noint <- aov(lm_block_eff <- lm(Time ~ Brand + Temp + Stirred, data = df_eff))
 #summary(lm_block_eff)
 #knitr::kable(summary(aov_block_eff)[[1]], caption = "Model 2: ANOVA Table")
@@ -202,7 +208,8 @@ aov_block_eff_noint <- aov(lm_block_eff <- lm(Time ~ Brand + Temp + Stirred, dat
 ```
 
 ```{r,  echo = FALSE, message = FALSE, error = FALSE}
-#added covariate Order model with stirred as block effect without interaction 
+#added covariate Order model with stirred as block effect without interaction
+#model7
 aov_block_order_eff <- aov(lm_block_order_eff <- lm(Time ~ Brand * Temp + Stirred + Order, data = df_eff))
 #summary(lm_block_order_eff)
 #knitr::kable(summary(aov_block_order_eff)[[1]], caption = "Model 3: ANOVA Table")
@@ -215,6 +222,7 @@ aov_block_order_eff <- aov(lm_block_order_eff <- lm(Time ~ Brand * Temp + Stirre
 
 
 ```{r,  echo = FALSE, message = FALSE, error = FALSE}
+#model8
 aov_three_order_eff <- aov(lm_three_order_eff <- lm(Time ~ Brand * Temp * Stirred + Order, data = df_eff))
 #summary(lm_three_order_eff)
 #knitr::kable(summary(aov_three_order_eff)[[1]], 'simple', caption = "Model 7: ANOVA Table")
@@ -225,6 +233,38 @@ aov_three_order_eff <- aov(lm_three_order_eff <- lm(Time ~ Brand * Temp * Stirre
 
 ### Model Selection
 
+```{r,  echo = FALSE, message = FALSE, error = FALSE}
+RMSE_function <- function(df_aov){
+    
+    r_mse <- sqrt(sum(df_aov$residuals^2)/df_aov$df)
+    
+    r_s <- 1 - tail(summary(df_aov)[1][[1]][[2]], n = 1) / sum(summary(df_aov)[1][[1]][2])
+
+    a_r_s <- 1 - (1 - r_s)*(nrow(df_aov$model) - 1)/(df_aov$df)
+    
+    output_stats <- c(
+        r_mse,
+        r_s,
+        a_r_s
+    )
+    return(output_stats)
+}
+
+model1 <- RMSE_function(aov_eff)
+model2 <- RMSE_function(aov_block_eff)
+model3 <- RMSE_function(aov_block_eff_noint)
+model7 <- RMSE_function(aov_block_order_eff)
+model8 <- RMSE_function(aov_three_order_eff)
+```
+
+|Model|Root MSE|$R^2$|$adj~R^2$|
+|-|-|-|-|
+|1|`r model1[1]`|`r model1[2]`|`r model1[3]`|
+|2|`r model2[1]`|`r model2[2]`|`r model2[3]`|
+|3|`r model3[1]`|`r model3[2]`|`r model3[3]`|
+|7|`r model7[1]`|`r model7[2]`|`r model7[3]`|
+|8|`r model8[1]`|`r model8[2]`|`r model8[3]`|
+
 ### Results
 
 ## Conclusion
@@ -233,30 +273,55 @@ aov_three_order_eff <- aov(lm_three_order_eff <- lm(Time ~ Brand * Temp * Stirre
 
 ## Appendix I: Analysis Tables and Figures
 
-```{r, echo =  FALSE, message=FALSE, error=FALSE}
+```{r, echo =  FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3.5), dpi=300}
 knitr::kable(df_stats, caption = "Data Summary Table")
 knitr::kable(summary(means_eff), caption = "Least Squares Means")
 knitr::kable(confint(cont_str_brd), caption = "Contrast Stirred and Brand")
 knitr::kable(confint(cont_strbrd), caption = "Contrast Stirred versus Brand")
 knitr::kable(confint(cont_temp), caption = "Contrast Temperatures")
+```
 
-knitr::kable(summary(aov_eff)[[1]], 'simple', caption = 'Model 1: ANOVA Table')
+\newpage
+
+```{r, echo =  FALSE, message=FALSE, error=FALSE, fig.dim=c(7,4), dpi=300}
+knitr::kable(summary(aov_eff)[[1]], 'simple', digits = 3, caption = 'Model 1: ANOVA Table')
+knitr::kable(Anova(aov_eff, type=3), 'simple', digits = 3, caption = 'Model 1: Type III ANOVA Table') # type 3 SS
 par(mfrow=c(2,2), mar = c(5,5,2,2))
-plot(aov_eff)
+plot(aov_eff, pch = 4)
+```
 
+\newpage
+
+```{r, echo =  FALSE, message=FALSE, error=FALSE, fig.dim=c(7,4), dpi=300}
 knitr::kable(summary(aov_block_eff)[[1]], 'simple' , caption = "Model 2: ANOVA Table")
 par(mfrow=c(2,2), mar = c(5,5,2,2))
-plot(aov_block_eff)
+plot(aov_block_eff, pch = 4)
+```
 
-knitr::kable(summary(aov_block_eff_noint)[[1]], 'simple', caption = "Model 4: ANOVA Table")
+\newpage
+
+```{r, echo =  FALSE, message=FALSE, error=FALSE, fig.dim=c(7,4), dpi=300}
+knitr::kable(summary(aov_block_eff_noint)[[1]], 'simple', caption = "Model 3: ANOVA Table")
 par(mfrow=c(2,2), mar = c(5,5,2,2))
-plot(aov_block_eff_noint)
+plot(aov_block_eff_noint, pch = 4)
+```
 
-knitr::kable(summary(aov_three_order_eff)[[1]], 'simple', caption = "Model 7: ANOVA Table")
+\newpage
+
+```{r, echo =  FALSE, message=FALSE, error=FALSE, fig.dim=c(7,4), dpi=300}
+knitr::kable(summary(aov_block_order_eff)[[1]], caption = "Model 7: ANOVA Table")
+#Anova(aov_block_order_eff, type=3) # type 3 SS
+par(mfrow=c(2,2), mar = c(5,5,2,2))
+plot(aov_block_order_eff, pch = 4)
+```
+
+\newpage
+
+```{r, echo =  FALSE, message=FALSE, error=FALSE, fig.dim=c(7,4), dpi=300}
+knitr::kable(summary(aov_three_order_eff)[[1]], 'simple', caption = "Model 8: ANOVA Table")
 #Anova(aov_three_order_eff, type=3) # type 3 SS
 par(mfrow=c(2,2), mar = c(5,5,2,2))
-plot(lm_three_order_eff)
-
+plot(lm_three_order_eff, pch = 4)
 ```
 
 \newpage
