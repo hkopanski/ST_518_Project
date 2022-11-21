@@ -15,15 +15,18 @@ df_eff <- read_csv('effervescence.csv', col_types = 'fffnnn')
 
 ## Exploratory Data Analysis
 
-For this study, we are presented with data from an 'Effervescent Experiment'. The data contained the dissolving times of two different brands of cold medicine tablets that were obtained under various conditions. Those conditions included varying water temperatures (6$^\circ$, 23$^\circ$, 406$^\circ$) and the presence of stirring (magnetic stir bar at 350 rpm). This was a complete block design with stirring acting as the blocking effect. In all, the data contained 48 rows and 6 columns. The 6 columns include 3 explanatory variables (Brand, Temp, Stirred categorical factors), 2 response variables (Time and Org Time, both numerical), and 1 descriptor (sample order). Prior to starting any analysis, we will explore the data to gain an understanding of what to expect and to check for violations of any assumptions.
+For this study, we are presented with data from an 'Effervescent Experiment'. The data contained the dissolving times of two different brands of cold medicine tablets that were obtained under various conditions. Those conditions included varying water temperatures (6$^\circ$, 23$^\circ$, 40$^\circ$) and the presence of stirring (magnetic stir bar at 350 rpm). This was a complete block design with stirring acting as the blocking effect. In all, the data contained 48 rows and 6 columns. The 6 columns include 3 explanatory variables (Brand, Temp, Stirred categorical factors), 2 response variables (Time and Org Time, both numerical), and 1 descriptor (sample order). Prior to starting any analysis, we will explore the data to gain an understanding of what to expect and to check for violations of any assumptions.
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE}
 df_stats <-
 df_eff %>% group_by(Brand, Temp, Stirred) %>% 
-summarise('25%' = quantile(Time, probs = 0.25),
+summarise('Min' = min(Time),
+          '25%' = quantile(Time, probs = 0.25),
           'Mean' = mean(Time), 
           'Median' = median(Time),
           '75%' = quantile(Time, probs = 0.75),
+          'Max' = max(Time),
+          'Range' = Max - Min,
           'Var' = var(Time), 
           'n' = n())
 
