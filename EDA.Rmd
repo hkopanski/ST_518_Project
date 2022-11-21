@@ -24,63 +24,21 @@ From the summary statistics table, we can see that each group has exactly 4 entr
 ```{r, echo=FALSE, message=FALSE, error=FALSE}
 df_stats <-
 df_eff %>% group_by(Brand, Temp, Stirred) %>% 
-summarise('25%' = quantile(Time, probs = 0.25),
+summarise('Min' = min(Time),
+          '25%' = quantile(Time, probs = 0.25),
           'Mean' = mean(Time), 
           'Median' = median(Time),
           '75%' = quantile(Time, probs = 0.75),
+          'Max' = max(Time),
+          'Range' = Max - Min,
           'Var' = var(Time), 
           'n' = n())
-
 knitr::kable(df_stats)
 ```
 
 There are insights to extract from this table.  We can see that there does appear to be a disparity between the mean dissolving times of store brand cold medications when compared to name brand. Store brand cold medicines dissolve in a shorter amount of time as a whole over all effects than does the name brand medicine.  This disparity becomes even more pronounced as the effect of temperature is introduced and as the temperature increases.  When the brand type is store the means between each of the same temperature effects are much closer in similarity than the between temperature of name brand medicines.  The differences between means store brand medicines of 6$^\circ$, 23$^\circ$ and 40$^\circ$ are 2.15, 1.32 and 0.162 respectively.  The differences between means name brand medicines of 6$^\circ$, 23$^\circ$ and 40$^\circ$ are 2.79, 3.67, and 4.70 respectively.  This may indicate an interaction effect on dissolving times by brand as the average difference in dissolving times is 1.21 for store brand and 3.72 for name brand.  
 
 Next, consider the range in variability at each factor and level.  The range in values of the variance is 6.9458; an interesting result considering nine of the twelve observable variances fall within a range of 0.04 and 1.69.  The variability between observations of name brand cold medicines are elevated, especially in cases when the observation was stirred at 23$^\circ$ and 40$^\circ$.  Variance of non-stirred observations, particularly within temperature values of 23$^\circ$ and 40$^\circ$, are noticeably lower than their stirred counterparts within the same brand.  The variance seems to jump by a large amount between the groups.  Contrast analysis might be a concern due to the small sample size.
-
-```{r echo=FALSE}
-store <- c(min(df_eff$Time[df_eff$Brand=='store']),
-           mean(df_eff$Time[df_eff$Brand=='store']),
-           max(df_eff$Time[df_eff$Brand=='store']),
-           max(df_eff$Time[df_eff$Brand=='store'])-min(df_eff$Time[df_eff$Brand=='store']))
-
-name <- c(min(df_eff$Time[df_eff$Brand=='name']),
-          mean(df_eff$Time[df_eff$Brand=='name']),
-          max(df_eff$Time[df_eff$Brand=='name']),
-          max(df_eff$Time[df_eff$Brand=='name'])-min(df_eff$Time[df_eff$Brand=='name']))
-
-temp6 <- c(min(df_eff$Time[df_eff$Temp==6]),
-           mean(df_eff$Time[df_eff$Temp==6]),
-           max(df_eff$Time[df_eff$Temp==6]),
-           max(df_eff$Time[df_eff$Temp==6])-min(df_eff$Time[df_eff$Temp==6]))
-
-temp23 <- c(min(df_eff$Time[df_eff$Temp==23]),
-            mean(df_eff$Time[df_eff$Temp==23]),
-            max(df_eff$Time[df_eff$Temp==23]),
-            max(df_eff$Time[df_eff$Temp==23])-min(df_eff$Time[df_eff$Temp==23]))
-
-temp40 <- c(min(df_eff$Time[df_eff$Temp==40]),
-            mean(df_eff$Time[df_eff$Temp==40]),
-            max(df_eff$Time[df_eff$Temp==40]),
-            max(df_eff$Time[df_eff$Temp==40])-min(df_eff$Time[df_eff$Temp==40]))
-
-stiry <- c(min(df_eff$Time[df_eff$Stirred=='yes']),
-           mean(df_eff$Time[df_eff$Stirred=='yes']),
-           max(df_eff$Time[df_eff$Stirred=='yes']),
-           max(df_eff$Time[df_eff$Stirred=='yes'])-min(df_eff$Time[df_eff$Stirred=='yes']))
-
-stirn <- c(min(df_eff$Time[df_eff$Stirred=='no']),
-           mean(df_eff$Time[df_eff$Stirred=='no']),
-           max(df_eff$Time[df_eff$Stirred=='no']),
-           max(df_eff$Time[df_eff$Stirred=='no'])-min(df_eff$Time[df_eff$Stirred=='no']))
-
-
-dfrange <- data.frame(store,name,temp6,temp23,temp40,stiry,stirn)
-dfrange <- t(dfrange)
-colnames(dfrange) <- c("Low", "Mean", "High", "Range")
-rownames(dfrange) <- c("Store","Name","Temperature 6","Temperature 23","Temperature 40","Stirred","Not Stirred")
-round(dfrange,4)
-```
 
 Further contextualizing central tendency and spread, we can see this illustrated in a different perspective by grouping effects together.  Take note that temperature has the smallest set of ranges, both at each individual level and as a whole when compared to brand type and stirring effect.  There is not a lot of varability among temperature compared to the other effects though they are different enought to identify an irregular increases as temperature increases.  The range of values provides additional context to the data's story; data points when focused only on temperature groups tends to be within a smaller range of each other indicating less variability; meanwhile brand and stirring effects have a wider distribution and more variability--outliers withstanding.  
 
