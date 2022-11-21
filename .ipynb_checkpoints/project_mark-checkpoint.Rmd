@@ -1,0 +1,77 @@
+---
+title: "marks_proj_work"
+author: "Mark Austin"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Exploratory Analysis  
+```{r message=FALSE, warning=FALSE}
+#using Halid's code to keep data frame consistent
+library(tidyverse)
+df_eff <- read_csv('effervescence.csv', col_types = 'fffnnn')
+df_eff %>% head()
+
+##3 factor interaction plot based on HW7 code
+
+with(df_eff%>%filter(Stirred=="yes"),interaction.plot(Temp,Brand,Time,
+            type="b", pch=19, col=c(2,4), ylab="mean Quality",
+           main="Mean Time vs. Brand: Stirred = yes"))
+
+with(df_eff%>%filter(Stirred=="no"),interaction.plot(Temp,Brand,Time,
+          type="b", pch=19, col=c(2,4), ylab="mean Quality",
+          main="Mean Time vs. Brand: Stirred = no"))
+
+
+```
+From the three factor interaction plots, does the 3 factor interaction look obvious here?  The brand by temp interaction is clear.
+
+## Analysis and Results  
+```{r message=TRUE, warning=TRUE}
+
+#model with stirred as block effect without interaction 
+aov_block_eff <- aov(lm_block_eff <- lm(Time ~ Brand * Temp + Stirred, data = df_eff))
+summary(lm_block_eff)
+summary(aov_block_eff)
+
+plot(aov_block_eff)
+
+library(olsrr)
+ols_plot_cooksd_chart(lm_block_eff)
+
+#added covariate Order model with stirred as block effect without interaction 
+aov_block_order_eff <- aov(lm_block_order_eff <- lm(Time ~ Brand * Temp + Stirred + Order, data = df_eff))
+summary(lm_block_order_eff)
+summary(aov_block_order_eff)
+library(car)
+Anova(aov_block_order_eff, type=3) # type 3 SS
+plot(lm_block_order_eff)
+ols_plot_cooksd_chart(lm_block_order_eff)
+
+
+#added covariate Order to model with 3 factor interaction
+aov_three_order_eff <- aov(lm_three_order_eff <- lm(Time ~ Brand * Temp*Stirred + Order, data = df_eff))
+summary(lm_three_order_eff)
+summary(aov_three_order_eff)
+library(car)
+Anova(aov_three_order_eff, type=3) # type 3 SS
+plot(lm_three_order_eff)
+
+#adding Halid's code to see how full 3 factor interaction compares
+aov_eff <- aov(lm_eff <- lm(Time ~ Brand * Temp * Stirred, data = df_eff))
+summary(lm_eff)
+summary(aov_eff)
+
+plot(aov_eff)
+
+#adding Cook's D here
+ols_plot_cooksd_chart(lm_eff)
+
+```
+
+
