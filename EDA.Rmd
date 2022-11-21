@@ -30,7 +30,49 @@ summarise('25%' = quantile(Time, probs = 0.25),
 knitr::kable(df_stats)
 ```
 
-From the summary statistics table, we can see that each group has exactly 4 entries, so no imbalance concerns. The variance seems to jump by quite a large amount between the groups, so contrast analysis might be a concern due to the small sample size. 
+From the summary statistics table, we can see that each group has exactly 4 entries, eliminating concerns with respect to design imbalance. There appears to be a decrease in the mean dissolving times of store brand cold medicines compared to name brand. The disparity between means by brands is especially more prominent as the temperature increases.
+
+```{r echo=FALSE}
+
+minstore <- min(df_eff$Time[df_eff$Brand=='store'])
+maxstore <- max(df_eff$Time[df_eff$Brand=='store'])
+store <- c(min(df_eff$Time[df_eff$Brand=='store']),max(df_eff$Time[df_eff$Brand=='store']),max(df_eff$Time[df_eff$Brand=='store'])-min(df_eff$Time[df_eff$Brand=='store']))
+
+minname <- min(df_eff$Time[df_eff$Brand=='name'])
+maxname <- max(df_eff$Time[df_eff$Brand=='name'])
+name <- c(min(df_eff$Time[df_eff$Brand=='name']),max(df_eff$Time[df_eff$Brand=='name']),max(df_eff$Time[df_eff$Brand=='name'])-min(df_eff$Time[df_eff$Brand=='name']))
+
+mintemp6 <- min(df_eff$Time[df_eff$Temp==6])
+maxtemp6 <- max(df_eff$Time[df_eff$Temp==6])
+temp6 <- c(min(df_eff$Time[df_eff$Temp==6]),max(df_eff$Time[df_eff$Temp==6]),max(df_eff$Time[df_eff$Temp==6])-min(df_eff$Time[df_eff$Temp==6]))
+
+mintemp23 <- min(df_eff$Time[df_eff$Temp==23])
+maxtemp23 <- max(df_eff$Time[df_eff$Temp==23])
+temp23 <- c(mintemp23 <- min(df_eff$Time[df_eff$Temp==23]),max(df_eff$Time[df_eff$Temp==23]),max(df_eff$Time[df_eff$Temp==23])-min(df_eff$Time[df_eff$Temp==23]))
+
+mintemp40 <- min(df_eff$Time[df_eff$Temp==40])
+maxtemp40 <- max(df_eff$Time[df_eff$Temp==40])
+temp40 <- c(min(df_eff$Time[df_eff$Temp==40]),max(df_eff$Time[df_eff$Temp==40]),max(df_eff$Time[df_eff$Temp==40])-min(df_eff$Time[df_eff$Temp==40]))
+
+minstiryes <- min(df_eff$Time[df_eff$Stirred=='yes'])
+maxstiryes <- max(df_eff$Time[df_eff$Stirred=='yes'])
+stiry <- c(min(df_eff$Time[df_eff$Stirred=='yes']),max(df_eff$Time[df_eff$Stirred=='yes']),max(df_eff$Time[df_eff$Stirred=='yes'])-min(df_eff$Time[df_eff$Stirred=='yes']))
+
+minstirno <- min(df_eff$Time[df_eff$Stirred=='no'])
+maxstirno <- max(df_eff$Time[df_eff$Stirred=='no'])
+stirn <- c(min(df_eff$Time[df_eff$Stirred=='no']),max(df_eff$Time[df_eff$Stirred=='no']),max(df_eff$Time[df_eff$Stirred=='no'])-min(df_eff$Time[df_eff$Stirred=='no']))
+
+
+dfrange <- data.frame(store,name,temp6,temp23,temp40,stiry,stirn)
+dfrange <- t(dfrange)
+colnames(dfrange) <- c("Min", "Max", "Range")
+rownames(dfrange) <- c("Store","Name","Temperature 6","Temperature 23","Temperature40","Stirred","Not Stirred")
+round(dfrange,4)
+```
+
+When effects are group together, we can consider the range of observations of dissolving time.  Notice that out of the three effects, temperature has the smallest range both at each individual level and as a whole when compared to brand type and stirring effect.  The range of values provides additional context to the story the data; that temperature groups tend to be within a smaller range of each indicating less variability while brand and stirring effects have a wider distribution and more variability. 
+
+With range of observations in mind, let us consider the range in variability.  The range in values of the variance is 6.9458, an interesting result considering 75% of all variance values fall between 0.1078 and 1.6943. We will want to look at the observations of name brand cold medicines stirred at 23$^\circ$ and 40$^\circ$ closely and highlight any interesting details. The variance seems to jump by quite a large amount between the groups, so contrast analysis might be a concern due to the small sample size.
 
 ```{r,  echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
 df_eff %>% ggplot() + geom_boxplot(aes(fill = Brand, y = Time, x = Temp)) + 
@@ -39,7 +81,7 @@ df_eff %>% ggplot() + geom_boxplot(aes(fill = Brand, y = Time, x = Temp)) +
 )
 ```
 
-Immediately it can be seen that stirring seems to increase the variance of the name-brand medicine. Also, an interaction effect between temperature and brand can be deduced if lines are drawn through the centers of the boxes. We can also see that temperature has an inverse effect on dissolving times whether stirring is present or not. Stirring might have an additive effect regardless of temperature. 
+Immediately it can be seen that stirring seems to increase the variance of the name-brand medicine. Also, an interaction effect between temperature and brand can be deduced if lines are drawn through the centers of the boxes. We can also see that temperature has an inverse effect on dissolving times whether stirring is present or not. Stirring might have an additive effect regardless of temperature.
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
 ##3 factor interaction plot based on HW7 code
@@ -53,8 +95,7 @@ with(df_eff%>%filter(Stirred=="no"),interaction.plot(Temp,Brand,Time,
           main="Mean Time vs. Temp: Stirred = no"))
 ```
 
-The possible interaction between brand and temperature becomes even more noticeable in the preceding three-factor interaction plots.  Specifically, the brand and temperature interaction can be seen when the temperature increases.  The slope for the store brand has a more pronounced negative slope than the slope of the name brand.  In addition, there might be a slight three-factor interaction between brand, temperature, and stirring as the name and store brand lines appear to be closer together in the stirred=yes plot than the stirred=no plot.  
-
+The possible interaction between brand and temperature becomes even more noticeable in the preceding three-factor interaction plots. Specifically, the brand and temperature interaction can be seen when the temperature increases. The slope for the store brand has a more pronounced negative slope than the slope of the name brand. In addition, there might be a slight three-factor interaction between brand, temperature, and stirring as the name and store brand lines appear to be closer together in the stirred=yes plot than the stirred=no plot.
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
 aov_eff <- aov(lm_eff <- lm(Time ~ Brand * Temp * Stirred, data = df_eff))
@@ -66,11 +107,11 @@ ggplot() + geom_col(aes(y = cooksD_values, x = 1:length(cooksD_values)), width =
     geom_hline(yintercept = 0.25, lty = 2) + labs(title = "Cook's Distance for each sample point")
 ```
 
-From the boxplots, we were able to see a small number of outliers. To confirm if there is any concern we plotted the Cook's Distance for each point based on a full linear model. Point 8 has a higher Cook's distance than the rest of the points which may require removal for analysis if it is suspected of causing issues in the analysis. This would have to be weighed against the risks caused by introducing imbalances. 
+From the boxplots, we were able to see a small number of outliers. To confirm if there is any concern we plotted the Cook's Distance for each point based on a full linear model. Point 8 has a higher Cook's distance than the rest of the points which may require removal for analysis if it is suspected of causing issues in the analysis. This would have to be weighed against the risks caused by introducing imbalances.
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
 qqnorm(lm_eff$resid, pch = 20)
 qqline(lm_eff$resid, col = "maroon", lwd = 2)
 ```
 
-Finally, we check the normality of the data. Here a QQ plot is generated for the full model residuals. The data seems to be indicative of heavy tails. This might pose a problem for some of our analyses.
+Finally, we check the normality of the data. Here a Q-Q plot is generated for the full model residuals. The data appears to suffer from heavy tails, multimodality and/or gap in data between the left tail and the center. Since downstream analysis hinges on the assumption that our data is normally distributed these issues may pose a problem.
