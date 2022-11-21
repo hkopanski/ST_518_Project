@@ -15,7 +15,11 @@ df_eff <- read_csv('effervescence.csv', col_types = 'fffnnn')
 
 ## Exploratory Data Analysis
 
-For this study, we are presented with data from an 'Effervescent Experiment'. The data contained the dissolving times of two different brands of cold medicine tablets that were obtained under various conditions. Those conditions included varying water temperatures (6$^\circ$, 23$^\circ$, 406$^\circ$) and the presence of stirring (magnetic stir bar at 350 rpm). This was a complete block design with stirring acting as the blocking effect. In all, the data contained 48 rows and 6 columns. The 6 columns include 3 explanatory variables (Brand, Temp, Stirred categorical factors), 2 response variables (Time and Org Time, both numerical), and 1 descriptor (sample order). Prior to starting any analysis, we will explore the data to gain an understanding of what to expect and to check for violations of any assumptions.
+### Summary
+
+For this study, we are presented with data from an 'Effervescent Experiment'. The data contains the dissolving times of two different brands of cold medicine tablets that were obtained under various conditions. Those conditions include varying water temperatures (6$^\circ$, 23$^\circ$, 406$^\circ$) and the presence of stirring (magnetic stir bar at 350 rpm). This was a complete block design with stirring acting as the blocking effect. In all, the data contains 48 rows and 6 columns. The 6 columns include 3 explanatory variables (Brand, Temp, Stirred categorical factors), a single response variables (Time, a continuous variable), and 1 descriptor (sample order). Prior to starting any analysis, we will explore the data to gain an understanding of what to expect and to check for violations of any assumptions.
+
+From the summary statistics table, we can see that each group has exactly 4 entries, eliminating concerns with respect to design imbalance.
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE}
 df_stats <-
@@ -30,49 +34,64 @@ summarise('25%' = quantile(Time, probs = 0.25),
 knitr::kable(df_stats)
 ```
 
-From the summary statistics table, we can see that each group has exactly 4 entries, eliminating concerns with respect to design imbalance. There appears to be a decrease in the mean dissolving times of store brand cold medicines compared to name brand. The disparity between means by brands is especially more prominent as the temperature increases.
+There are insights to extract from this table.  We can see that there does appear to be a disparity between the mean dissolving times of store brand cold medications when compared to name brand. Store brand cold medicines dissolve in a shorter amount of time as a whole over all effects than does the name brand medicine.  This disparity becomes even more pronounced as the effect of temperature is introduced and as the temperature increases.  When the brand type is store the means between each of the same temperature effects are much closer in similarity than the between temperature of name brand medicines.  The differences between means store brand medicines of 6$^\circ$, 23$^\circ$ and 40$^\circ$ are 2.15, 1.32 and 0.162 respectively.  The differences between means name brand medicines of 6$^\circ$, 23$^\circ$ and 40$^\circ$ are 2.79, 3.67, and 4.70 respectively.  This may indicate an interaction effect on dissolving times by brand as the average difference in dissolving times is 1.21 for store brand and 3.72 for name brand.  
+
+Next, consider the range in variability at each factor and level.  The range in values of the variance is 6.9458; an interesting result considering nine of the twelve observable variances fall within a range of 0.04 and 1.69.  The variability between observations of name brand cold medicines are elevated, especially in cases when the observation was stirred at 23$^\circ$ and 40$^\circ$.  Variance of non-stirred observations, particularly within temperature values of 23$^\circ$ and 40$^\circ$, are noticeably lower than their stirred counterparts within the same brand.  The variance seems to jump by a large amount between the groups.  Contrast analysis might be a concern due to the small sample size.
 
 ```{r echo=FALSE}
+store <- c(min(df_eff$Time[df_eff$Brand=='store']),
+           mean(df_eff$Time[df_eff$Brand=='store']),
+           max(df_eff$Time[df_eff$Brand=='store']),
+           max(df_eff$Time[df_eff$Brand=='store'])-min(df_eff$Time[df_eff$Brand=='store']))
 
-minstore <- min(df_eff$Time[df_eff$Brand=='store'])
-maxstore <- max(df_eff$Time[df_eff$Brand=='store'])
-store <- c(min(df_eff$Time[df_eff$Brand=='store']),max(df_eff$Time[df_eff$Brand=='store']),max(df_eff$Time[df_eff$Brand=='store'])-min(df_eff$Time[df_eff$Brand=='store']))
+name <- c(min(df_eff$Time[df_eff$Brand=='name']),
+          mean(df_eff$Time[df_eff$Brand=='name']),
+          max(df_eff$Time[df_eff$Brand=='name']),
+          max(df_eff$Time[df_eff$Brand=='name'])-min(df_eff$Time[df_eff$Brand=='name']))
 
-minname <- min(df_eff$Time[df_eff$Brand=='name'])
-maxname <- max(df_eff$Time[df_eff$Brand=='name'])
-name <- c(min(df_eff$Time[df_eff$Brand=='name']),max(df_eff$Time[df_eff$Brand=='name']),max(df_eff$Time[df_eff$Brand=='name'])-min(df_eff$Time[df_eff$Brand=='name']))
+temp6 <- c(min(df_eff$Time[df_eff$Temp==6]),
+           mean(df_eff$Time[df_eff$Temp==6]),
+           max(df_eff$Time[df_eff$Temp==6]),
+           max(df_eff$Time[df_eff$Temp==6])-min(df_eff$Time[df_eff$Temp==6]))
 
-mintemp6 <- min(df_eff$Time[df_eff$Temp==6])
-maxtemp6 <- max(df_eff$Time[df_eff$Temp==6])
-temp6 <- c(min(df_eff$Time[df_eff$Temp==6]),max(df_eff$Time[df_eff$Temp==6]),max(df_eff$Time[df_eff$Temp==6])-min(df_eff$Time[df_eff$Temp==6]))
+temp23 <- c(min(df_eff$Time[df_eff$Temp==23]),
+            mean(df_eff$Time[df_eff$Temp==23]),
+            max(df_eff$Time[df_eff$Temp==23]),
+            max(df_eff$Time[df_eff$Temp==23])-min(df_eff$Time[df_eff$Temp==23]))
 
-mintemp23 <- min(df_eff$Time[df_eff$Temp==23])
-maxtemp23 <- max(df_eff$Time[df_eff$Temp==23])
-temp23 <- c(mintemp23 <- min(df_eff$Time[df_eff$Temp==23]),max(df_eff$Time[df_eff$Temp==23]),max(df_eff$Time[df_eff$Temp==23])-min(df_eff$Time[df_eff$Temp==23]))
+temp40 <- c(min(df_eff$Time[df_eff$Temp==40]),
+            mean(df_eff$Time[df_eff$Temp==40]),
+            max(df_eff$Time[df_eff$Temp==40]),
+            max(df_eff$Time[df_eff$Temp==40])-min(df_eff$Time[df_eff$Temp==40]))
 
-mintemp40 <- min(df_eff$Time[df_eff$Temp==40])
-maxtemp40 <- max(df_eff$Time[df_eff$Temp==40])
-temp40 <- c(min(df_eff$Time[df_eff$Temp==40]),max(df_eff$Time[df_eff$Temp==40]),max(df_eff$Time[df_eff$Temp==40])-min(df_eff$Time[df_eff$Temp==40]))
+stiry <- c(min(df_eff$Time[df_eff$Stirred=='yes']),
+           mean(df_eff$Time[df_eff$Stirred=='yes']),
+           max(df_eff$Time[df_eff$Stirred=='yes']),
+           max(df_eff$Time[df_eff$Stirred=='yes'])-min(df_eff$Time[df_eff$Stirred=='yes']))
 
-minstiryes <- min(df_eff$Time[df_eff$Stirred=='yes'])
-maxstiryes <- max(df_eff$Time[df_eff$Stirred=='yes'])
-stiry <- c(min(df_eff$Time[df_eff$Stirred=='yes']),max(df_eff$Time[df_eff$Stirred=='yes']),max(df_eff$Time[df_eff$Stirred=='yes'])-min(df_eff$Time[df_eff$Stirred=='yes']))
-
-minstirno <- min(df_eff$Time[df_eff$Stirred=='no'])
-maxstirno <- max(df_eff$Time[df_eff$Stirred=='no'])
-stirn <- c(min(df_eff$Time[df_eff$Stirred=='no']),max(df_eff$Time[df_eff$Stirred=='no']),max(df_eff$Time[df_eff$Stirred=='no'])-min(df_eff$Time[df_eff$Stirred=='no']))
+stirn <- c(min(df_eff$Time[df_eff$Stirred=='no']),
+           mean(df_eff$Time[df_eff$Stirred=='no']),
+           max(df_eff$Time[df_eff$Stirred=='no']),
+           max(df_eff$Time[df_eff$Stirred=='no'])-min(df_eff$Time[df_eff$Stirred=='no']))
 
 
 dfrange <- data.frame(store,name,temp6,temp23,temp40,stiry,stirn)
 dfrange <- t(dfrange)
-colnames(dfrange) <- c("Min", "Max", "Range")
-rownames(dfrange) <- c("Store","Name","Temperature 6","Temperature 23","Temperature40","Stirred","Not Stirred")
+colnames(dfrange) <- c("Low", "Mean", "High", "Range")
+rownames(dfrange) <- c("Store","Name","Temperature 6","Temperature 23","Temperature 40","Stirred","Not Stirred")
 round(dfrange,4)
 ```
 
-When effects are group together, we can consider the range of observations of dissolving time.  Notice that out of the three effects, temperature has the smallest range both at each individual level and as a whole when compared to brand type and stirring effect.  The range of values provides additional context to the story the data; that temperature groups tend to be within a smaller range of each indicating less variability while brand and stirring effects have a wider distribution and more variability. 
+Further contextualizing central tendency and spread, we can see this illustrated in a different perspective by grouping effects together.  Take note that temperature has the smallest set of ranges, both at each individual level and as a whole when compared to brand type and stirring effect.  There is not a lot of varability among temperature compared to the other effects though they are different enought to identify an irregular increases as temperature increases.  The range of values provides additional context to the data's story; data points when focused only on temperature groups tends to be within a smaller range of each other indicating less variability; meanwhile brand and stirring effects have a wider distribution and more variability--outliers withstanding.  
 
-With range of observations in mind, let us consider the range in variability.  The range in values of the variance is 6.9458, an interesting result considering 75% of all variance values fall between 0.1078 and 1.6943. We will want to look at the observations of name brand cold medicines stirred at 23$^\circ$ and 40$^\circ$ closely and highlight any interesting details. The variance seems to jump by quite a large amount between the groups, so contrast analysis might be a concern due to the small sample size.
+#### Interactions
+\
+\
+From the boxplots below, we can immediately see that stirring seems to increase the variance of the name-brand medicine--while also decreasing the mean differences of brand within each temperature grouping.  An interaction effect between temperature and brand can be deduced if lines are drawn through the centers of the boxes. Earlier, we had introduce an insight from the summary statistics output indicating an inverse relationship between temperature and dissolve time--as temperature increases dissolve time decreases.  The boxplot reinforces this idea.  In fact, we can also make the claim that temperature has an inverse effect on dissolving times whether stirring is present or not--indications of temperature having a strong effect on dissolving time by itself.  Stirring might have an additive effect regardless of temperature.
+
+It is simply conjecture at this point, however we noticed that observations of dissolve time while stirring the water seems to have increased the name brand variability, while not stirring the water seems to have increased the store brand variability.  Perhaps worth looking into the blocking effects of stirred on variability at various temperatures. 
+
+Outliers are present in our boxplots and we will address these data points when looking at assumptions. 
 
 ```{r,  echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
 df_eff %>% ggplot() + geom_boxplot(aes(fill = Brand, y = Time, x = Temp)) + 
@@ -81,7 +100,7 @@ df_eff %>% ggplot() + geom_boxplot(aes(fill = Brand, y = Time, x = Temp)) +
 )
 ```
 
-Immediately it can be seen that stirring seems to increase the variance of the name-brand medicine. Also, an interaction effect between temperature and brand can be deduced if lines are drawn through the centers of the boxes. We can also see that temperature has an inverse effect on dissolving times whether stirring is present or not. Stirring might have an additive effect regardless of temperature.
+The possible interaction between brand and temperature becomes even more noticeable in the preceding three-factor interaction plots. Specifically, the brand and temperature interaction can be seen when the temperature increases. The slope for the store brand has a more pronounced negative slope than the slope of the name brand. In addition, there might be a slight three-factor interaction between brand, temperature, and stirring as the name and store brand lines appear to be closer together in the stirred=yes plot than the stirred=no plot.
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
 ##3 factor interaction plot based on HW7 code
@@ -95,7 +114,10 @@ with(df_eff%>%filter(Stirred=="no"),interaction.plot(Temp,Brand,Time,
           main="Mean Time vs. Temp: Stirred = no"))
 ```
 
-The possible interaction between brand and temperature becomes even more noticeable in the preceding three-factor interaction plots. Specifically, the brand and temperature interaction can be seen when the temperature increases. The slope for the store brand has a more pronounced negative slope than the slope of the name brand. In addition, there might be a slight three-factor interaction between brand, temperature, and stirring as the name and store brand lines appear to be closer together in the stirred=yes plot than the stirred=no plot.
+### Assumptions and Violations
+
+#### Interaction
+
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
 aov_eff <- aov(lm_eff <- lm(Time ~ Brand * Temp * Stirred, data = df_eff))
@@ -110,8 +132,22 @@ ggplot() + geom_col(aes(y = cooksD_values, x = 1:length(cooksD_values)), width =
 From the boxplots, we were able to see a small number of outliers. To confirm if there is any concern we plotted the Cook's Distance for each point based on a full linear model. Point 8 has a higher Cook's distance than the rest of the points which may require removal for analysis if it is suspected of causing issues in the analysis. This would have to be weighed against the risks caused by introducing imbalances.
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
+options(repr.plot.width = 8, repr.plot.height = 6, repr.plot.res = 200)
+qqnorm(df_eff$Time, pch = 20)
+qqline(df_eff$Time, col = "maroon", lwd = 2)
+```
+
+Finally, we check the normality of the data. Here a Q-Q plot is generated for the full model residuals. The data appears to suffer from heavy tails, multimodality and/or gaps in data between the left tail and the center. Since downstream analysis hinges on the assumption that our data is normally distributed, these issues may pose a problem.
+
+
+
+## Recycling Bin
+
+```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
+options(repr.plot.width = 8, repr.plot.height = 6, repr.plot.res = 200)
+qqnorm(df_eff$Time, pch = 20)
+qqline(df_eff$Time, col = "maroon", lwd = 2)
+
 qqnorm(lm_eff$resid, pch = 20)
 qqline(lm_eff$resid, col = "maroon", lwd = 2)
 ```
-
-Finally, we check the normality of the data. Here a Q-Q plot is generated for the full model residuals. The data appears to suffer from heavy tails, multimodality and/or gap in data between the left tail and the center. Since downstream analysis hinges on the assumption that our data is normally distributed these issues may pose a problem.
