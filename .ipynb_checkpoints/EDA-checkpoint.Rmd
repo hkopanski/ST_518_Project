@@ -1,0 +1,76 @@
+---
+title: "EDA"
+author: "Halid Kopanski"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r echo=FALSE, error=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(car)
+library(emmeans)
+library(lme4)
+df_eff <- read_csv('effervescence.csv', col_types = 'fffnnn')
+```
+
+## Exploratory Data Analysis
+
+For this study we are presented with data from an 'Effervescent Experiment'. The data contained dissolving times of two different brands of cold medicine tablets that were obtained under various conditions. Those conditions included varying water temperatures (6$^\circ$, 23$^\circ$, 406$^\circ$) and the presence of stirring (magnetic stir bar at 350 rpm). This was a complete block design with stirring acting as the blocking effect. In all, the data contained 48 rows and 6 columns. The 6 columns include 3 explanatory variables (Brand, Temp, Stirred categorical factors), 2 response variables (Time and Org Time, both numerical) and 1 descriptor (sample order). Prior to starting any analysis, we will explore the data to gain an understanding of what to expect and to check for violations of any assumptions.
+
+```{r, echo=FALSE, message=FALSE, error=FALSE}
+df_stats <-
+df_eff %>% group_by(Brand, Temp, Stirred) %>% 
+summarise('25%' = quantile(Time, probs = 0.25),
+          'Mean' = mean(Time), 
+          'Median' = median(Time),
+          '75%' = quantile(Time, probs = 0.75),
+          'Var' = var(Time), 
+          'n' = n())
+
+knitr::kable(df_stats)
+```
+
+From the summary statistics table, we can see that each group has exactly 4 entries, so no imbalance concerns. The variance seems to jump by quite a large amount between the groups, so contrast analysis might be a concern due to the small sample size. 
+
+```{r,  echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
+df_eff %>% ggplot() + geom_boxplot(aes(fill = Brand, y = Time, x = Temp)) + 
+  facet_grid(cols = vars(Stirred)) + labs(title = "Stirred") + theme(
+  plot.title = element_text(hjust = 0.5)
+)
+```
+
+Immediately it can be seen that stirring seems to increase the variance of the name brand medicine. Also, an interaction effect between temperature and brand can be deduced if lines are drawn through the centers of the boxes. We can also see that temperature has an inverse effect on dissolving times whether stirring is present or not. Stirring might have an additive effect regardless of temperature. 
+
+```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
+##3 factor interaction plot based on HW7 code
+
+with(df_eff%>%filter(Stirred=="yes"),interaction.plot(Temp,Brand,Time,
+            type="b", pch=19, col=c(2,4), ylab="mean Time",
+           main="Mean Time vs. Temp: Stirred = yes"))
+
+with(df_eff%>%filter(Stirred=="no"),interaction.plot(Temp,Brand,Time,
+          type="b", pch=19, col=c(2,4), ylab="mean Time",
+          main="Mean Time vs. Temp: Stirred = no"))
+```
+
+The possible interaction between brand and temperature becomes even more noticeable in the preceding three factor interaction plots.  Specifically the brand and temperature interaction can be seen with increasing temperature the store brand line has a more negative slope than the name brand line.  In addition, there might be a slight three factor interaction between brand, temperature, and stirring as the name and store brand lines appear to be closer together in the stirred=yes plot than the stirred=no plot.  
+
+
+```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
+aov_eff <- aov(lm_eff <- lm(Time ~ Brand * Temp * Stirred, data = df_eff))
+
+cooksD_values <- cooks.distance(lm_eff)
+ 
+ggplot() + geom_col(aes(y = cooksD_values, x = 1:length(cooksD_values)), width = 0.025, col = 'red')  + 
+    geom_point(aes(y = cooksD_values, x = 1:length(cooksD_values))) + xlab('Sample Points') + ylab("Cook's Distance") + 
+    geom_hline(yintercept = 0.25, lty = 2) + labs(title = "Cook's Distance for each sample point")
+```
+
+From the boxplots, we were able to see a small amount of outliers. To confirm if there are any of concern we plotted the Cook's Distance for each point based on a full linear model. Point 8 has a higher Cook's distance than the rest of the points which may require removal for analysis if it is suspected of causing issues in the analysis. This would have to be weighed against the risks cause by introducing imbalances. 
+
+```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
+qqnorm(lm_eff$resid, pch = 20)
+qqline(lm_eff$resid, col = "maroon", lwd = 2)
+```
+
+Finally, we check the normality of the data. Here a QQ plot is generated for the full model residuals. The data seems to be indicative of heavy tails. This might pose a problem for some of our analyses.
