@@ -1,0 +1,75 @@
+---
+title: "AIC, BIC, CP"
+author: "Justin Feathers"
+date: '2022-11-19'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Reads in libraries and `effervescence.csv` dataset
+```{r}
+library(tidyverse)
+library(broom)
+library(caret)
+df_eff <- read_csv('effervescence.csv', col_types = 'fffnnn')
+```
+
+# Full model
+* RMSE = 1.075
+* AIC = 155.3374
+* BIC = 179.663
+```{r}
+lm_eff <- lm(Time ~ Brand * Temp * Stirred, data = df_eff)
+summary(lm_eff)
+glance(lm_eff)
+```
+
+# Stirred as block effect
+* RMSE = 1.319
+* AIC = 171.1984
+* BIC = 186.168
+```{r}
+lm_block_eff <- lm(Time ~ Brand * Temp + Stirred, data = df_eff)
+summary(lm_block_eff)
+glance(lm_block_eff)
+```
+
+# Covariate order with 3 factor interaction
+* RMSE = 1.087
+* AIC = 157.0557
+* BIC = 183.2525
+```{r}
+lm_three_order_eff <- lm(Time ~ Brand * Temp*Stirred + Order, data = df_eff)
+summary(lm_three_order_eff)
+glance(lm_three_order_eff)
+```
+
+# Covariate order with stirred as block effect without interaction
+* RMSE = 1.303
+* AIC = 170.872
+* BIC = 187.7129
+```{r}
+lm_block_order_eff <- lm(Time ~ Brand * Temp + Stirred + Order, data = df_eff)
+summary(lm_block_order_eff)
+glance(lm_block_order_eff)
+```
+
+# For SAS Appendix models:  
+## Random Temp, Random Brand  
+* RMSE = 1.83
+* AIC = 224.9
+* BIC = 221.3
+
+## Fixed Temp, Random Brand  
+* RMSE = 1.83
+* AIC = 208.3
+* BIC = 204.4
+
+## Random Temp, Fixed Brand  
+* RMSE = 1.83
+* AIC = 216.8
+* BIC = 214.1 
+
