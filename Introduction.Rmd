@@ -1,0 +1,16 @@
+---
+title: "Introduction"
+author: "Justin Feathers"
+date: '2022-11-19'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The "Effervescent Experiment" was conducted by dissolving two different brands of 
+cold medicine tablets at three different, equally spaced water temperatures using
+a complete block design. We will fit several different models to determine the one
+that best fits the data and hope to discover the effects, if any, of temperature
+and brand on dissolving time.
