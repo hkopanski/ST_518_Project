@@ -27,17 +27,16 @@ Text goes here.....
 
 ## Introduction
 
-We need to define some kind of goal for the paper. A driver for this study. Are we trying to find a difference between store and name brand? Does stirring have an effect?
+The "Effervescent Experiment" was conducted by dissolving two different brands of cold medicine tablets at three different, equally spaced water temperatures using a complete block design. We will fit several different models to determine the one that best fits the data and hope to discover the effects, if any, of temperature and brand on dissolving time.
 
 ### Experimental Design
 
-Description here
-
+For this study, we are presented with data from an 'Effervescent Experiment'. The data contains the dissolving times of two different brands of cold medicine tablets that were obtained under various conditions. Those conditions include varying water temperatures (6$^\circ$, 23$^\circ$, 40$^\circ$) and the presence of stirring (magnetic stir bar at 350 rpm). This was a complete block design with stirring acting as the blocking effect. 
 ### Exploratory Data Analysis
 
 ### Summary
 
-For this study, we are presented with data from an 'Effervescent Experiment'. The data contains the dissolving times of two different brands of cold medicine tablets that were obtained under various conditions. Those conditions include varying water temperatures (6$^\circ$, 23$^\circ$, 40$^\circ$) and the presence of stirring (magnetic stir bar at 350 rpm). This was a complete block design with stirring acting as the blocking effect. In all, the data contains 48 rows and 6 columns. The 6 columns include 3 explanatory variables (Brand, Temp, Stirred categorical factors), a single response variables (Time, a continuous variable), and 1 descriptor (sample order). Prior to starting any analysis, we will explore the data to gain an understanding of what to expect and to check for violations of any assumptions.
+The provided dataset contains 48 rows and 6 columns. The 6 columns include 3 explanatory variables (Brand, Temp, Stirred categorical factors), a single response variables (Time, a continuous variable), and 1 descriptor (sample order). Prior to starting any analysis, we will explore the data to gain an understanding of what to expect and to check for violations of any assumptions.
 
 From the summary statistics table (see Appendix 1, Table 1), we can see that each group has exactly 4 entries, eliminating concerns with respect to design imbalance.
 
@@ -128,7 +127,7 @@ CD_plot <- ggplot() +
   geom_point(aes(y = cooksD_values, x = 1:length(cooksD_values))) + 
   xlab('Sample Points') + ylab("Cook's Distance") + 
   geom_hline(yintercept = 0.25, lty = 2) + 
-  labs(title = "Cook's Distance for each sample point")
+  labs(title = "Cook's Distance")
 
 #CD_plot <- ols_plot_cooksd_chart(lm_eff)
 qqplot1 <- ggplot(df_eff, aes(sample = Time)) + 
@@ -348,6 +347,77 @@ knitr::kable(Anova(aov_block_eff_noint, type=3),
              'simple', digits = 3, caption = 'Model 3: Type III ANOVA Table')
 par(mfrow=c(2,2), mar = c(5,5,2,2))
 plot(aov_block_eff_noint, pch = 4)
+```
+
+\newpage
+
+```{r, echo =  FALSE, message=FALSE, error=FALSE, fig.dim=c(7,4), dpi=300}
+
+lm_eff_me <- lm(Time ~ Brand * Temp, data = df_eff)
+aov_eff_me <- aov(lm_eff_me)
+anova_eff_me <- anova(lm_eff_me)
+
+me_table <- as_tibble(summary(aov_eff_me)[[1]][,1:3])
+me_table <- cbind('Source' = c('Brand', 'Temp', 'Brand*Temp', 'Residual'), 
+                  me_table, 
+                  'Error Term' = c("MSAB", "MSAB", "MSE", "NA"))
+
+MSA <-  me_table[1, 4]
+MSB <-  me_table[2, 4]
+MSAB <- me_table[3, 4]
+MSE <-  round(me_table[4, 4],3)
+
+a <- length(levels(df_eff$Brand))
+b <- length(levels(df_eff$Temp))
+n <- nrow(df_eff)/(a*b)
+
+sigma_ab <- round((MSAB - MSE) / n,3)
+sigma_a <- round((MSA - MSAB) / (b * n), 3)
+sigma_b <- round((MSB - MSAB) / (a*n), 3)
+
+f_scores <- c(MSA/MSAB,MSB/MSAB,MSAB/MSE, NA)
+
+error_dof <- c(rep(tail(me_table$Df, n = 2)[1], 2), tail(me_table$Df, n = 1)[1], NA)
+
+me_table['Error Df'] <- error_dof
+
+me_table["F Score"] <- f_scores
+f_test <- round(1 - pf(me_table['F Score'][[1]], 
+                       me_table['Df'][[1]], 
+                       me_table['Error Df'][[1]]),
+                4)
+
+me_table['Pr>F'] <- f_test
+
+
+
+name_mean <- df_eff %>% filter(Brand == 'name') %>% select(Time) %>% unlist() %>% mean()
+brand_fe <- df_eff %>% group_by(Brand) %>% summarise('Mean' = mean(Time), 'Effect' = Mean - name_mean)
+
+name_mean <- df_eff %>% filter(Temp == '6') %>% select(Time) %>% unlist() %>% mean()
+temp_fe <- df_eff %>% group_by(Temp) %>% summarise('Mean' = mean(Time), 'Effect' = Mean - name_mean)
+```
+
+```{r, echo =  FALSE, message=FALSE, error=FALSE, fig.dim=c(7,4), dpi=300}
+knitr::kable(me_table, caption = 'Mixed Effects Models')
+
+knitr::kable(brand_fe, digits = 3,
+             caption = 'Model4: Brand is Fixed and Temperature is Random')
+
+knitr::kable(cbind(c('Temp', 'Brand*Temp', 'Residual'), 
+                   c(sigma_b, sigma_ab, MSE)), col.names = c('Cov Parm', 'Estimate'), caption = "")
+```
+
+```{r, echo =  FALSE, message=FALSE, error=FALSE, fig.dim=c(7,4), dpi=300}
+knitr::kable(temp_fe, caption = 'Model5: Brand is Random and Temperature is Fixed')
+knitr::kable(cbind(c('Brand', 'Brand*Temp', 'Residual'), 
+                   c(sigma_a, sigma_ab, MSE)), col.names = c('Cov Parm', 'Estimate'), caption = "")
+```
+
+```{r, echo =  FALSE, message=FALSE, error=FALSE, fig.dim=c(7,4), dpi=300}
+knitr::kable(cbind(c('Brand', 'Temp' , 'Brand*Temp', 'Residual'), 
+                   c(sigma_a, sigma_b,sigma_ab, MSE)), col.names = c('Cov Parm', 'Estimate'), 
+             caption = 'Model6: Brand and Temperature are Random')
 ```
 
 \newpage
