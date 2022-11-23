@@ -31,8 +31,9 @@ The "Effervescent Experiment" was conducted by dissolving two different brands o
 
 ### Experimental Design
 
-For this study, we are presented with data from an 'Effervescent Experiment'. The data contains the dissolving times of two different brands of cold medicine tablets that were obtained under various conditions. Those conditions include varying water temperatures (6$^\circ$, 23$^\circ$, 40$^\circ$) and the presence of stirring (magnetic stir bar at 350 rpm). This was a complete block design with stirring acting as the blocking effect. 
-### Exploratory Data Analysis
+For this study, we are presented with data from an 'Effervescent Experiment'. The data contains the dissolving times of two different brands of cold medicine tablets that were obtained under various conditions. Those conditions include varying water temperatures (6$^\circ$, 23$^\circ$, 40$^\circ$) and the presence of stirring (magnetic stir bar at 350 rpm). This was a complete block design with stirring acting as the blocking effect.  
+
+## Exploratory Data Analysis
 
 ### Summary
 
@@ -56,20 +57,21 @@ summarise('Min' = min(Time),
 #knitr::kable(df_stats)
 ```
 
-There are insights to extract from this table.  We can see that there does appear to be a disparity between the mean dissolving times of store brand cold medications when compared to name brand. Store brand cold medicines dissolve in a shorter amount of time as a whole over all effects than does the name brand medicine.  This disparity becomes even more pronounced as the effect of temperature is introduced and as the temperature increases.  When the brand type is store the means between each of the same temperature effects are much closer in similarity than the between temperature of name brand medicines.  The differences between means store brand medicines of 6$^\circ$, 23$^\circ$ and 40$^\circ$ are 2.15, 1.32 and 0.162 respectively.  The differences between means name brand medicines of 6$^\circ$, 23$^\circ$ and 40$^\circ$ are 2.79, 3.67, and 4.70 respectively.  This may indicate an interaction effect on dissolving times by brand as the average difference in dissolving times is 1.21 for store brand and 3.72 for name brand.  
+There are insights to extract from this table. We can see that there does appear to be a disparity between the mean dissolving times of store brand cold medications when compared to name brand. Store brand cold medicines dissolve in a shorter amount of time as a whole over all effects than does the name brand medicine. This disparity becomes even more pronounced as the effect of temperature is introduced and as the temperature increases. When the brand type is store the means between each of the same temperature effects are much closer in similarity than the between temperature of name brand medicines. The differences between means store brand medicines of 6$^\circ$, 23$^\circ$ and 40$^\circ$ are 2.15, 1.32 and 0.162 respectively. The differences between means name brand medicines of 6$^\circ$, 23$^\circ$ and 40$^\circ$ are 2.79, 3.67, and 4.70 respectively. This may indicate an interaction effect on dissolving times by brand as the average difference in dissolving times is 1.21 for store brand and 3.72 for name brand.
 
-Next, consider the range in variability at each factor and level.  The range in values of the variance is 6.9458; an interesting result considering nine of the twelve observable variances fall within a range of 0.04 and 1.69.  The variability between observations of name brand cold medicines are elevated, especially in cases when the observation was stirred at 23$^\circ$ and 40$^\circ$.  Variance of non-stirred observations, particularly within temperature values of 23$^\circ$ and 40$^\circ$, are noticeably lower than their stirred counterparts within the same brand.  The variance seems to jump by a large amount between the groups.  Contrast analysis might be a concern due to the small sample size.
+Next, consider the range in variability at each factor and level. The range in values of the variance is 6.9458; an interesting result considering nine of the twelve observable variances fall within a range of 0.04 and 1.69. The variability between observations of name brand cold medicines are elevated, especially in cases when the observation was stirred at 23$^\circ$ and 40$^\circ$. Variance of non-stirred observations, particularly within temperature values of 23$^\circ$ and 40$^\circ$, are noticeably lower than their stirred counterparts within the same brand. The variance seems to jump by a large amount between the groups. Contrast analysis might be a concern due to the small sample size.
 
-Further contextualizing central tendency and spread, we can see this illustrated in a different perspective by grouping effects together.  Take note that temperature has the smallest set of ranges, both at each individual level and as a whole when compared to brand type and stirring effect.  There is not a lot of varability among temperature compared to the other effects though they are different enought to identify an irregular increases as temperature increases.  The range of values provides additional context to the data's story; data points when focused only on temperature groups tends to be within a smaller range of each other indicating less variability; meanwhile brand and stirring effects have a wider distribution and more variability--outliers withstanding.
+Further contextualizing central tendency and spread, we can see this illustrated in a different perspective by grouping effects together. Take note that temperature has the smallest set of ranges, both at each individual level and as a whole when compared to brand type and stirring effect. There is not a lot of varability among temperature compared to the other effects though they are different enought to identify an irregular increases as temperature increases. The range of values provides additional context to the data's story; data points when focused only on temperature groups tends to be within a smaller range of each other indicating less variability; meanwhile brand and stirring effects have a wider distribution and more variability--outliers withstanding.
 
 #### Interactions
+
 \
 \
-From the boxplots below, we can immediately see that stirring seems to increase the variance of the name-brand medicine--while also decreasing the mean differences of brand within each temperature grouping.  An interaction effect between temperature and brand can be deduced if lines are drawn through the centers of the boxes. Earlier, we had introduce an insight from the summary statistics output indicating an inverse relationship between temperature and dissolve time--as temperature increases dissolve time decreases.  The boxplot reinforces this idea.  In fact, we can also make the claim that temperature has an inverse effect on dissolving times whether stirring is present or not--indications of temperature having a strong effect on dissolving time by itself.  Stirring might have an additive effect regardless of temperature.
+From the boxplots below, we can immediately see that stirring seems to increase the variance of the name-brand medicine--while also decreasing the mean differences of brand within each temperature grouping. An interaction effect between temperature and brand can be deduced if lines are drawn through the centers of the boxes. Earlier, we had introduce an insight from the summary statistics output indicating an inverse relationship between temperature and dissolve time--as temperature increases dissolve time decreases. The boxplot reinforces this idea. In fact, we can also make the claim that temperature has an inverse effect on dissolving times whether stirring is present or not--indications of temperature having a strong effect on dissolving time by itself. Stirring might have an additive effect regardless of temperature.
 
-It is simply conjecture at this point, however we noticed that observations of dissolve time while stirring the water seems to have increased the name brand variability, while not stirring the water seems to have increased the store brand variability.  Perhaps worth looking into the blocking effects of stirred on variability at various temperatures. 
+It is simply conjecture at this point, however we noticed that observations of dissolve time while stirring the water seems to have increased the name brand variability, while not stirring the water seems to have increased the store brand variability. Perhaps worth looking into the blocking effects of stirred on variability at various temperatures.
 
-Outliers are present in our boxplots and we will address these data points when looking at assumptions. 
+Outliers are present in our boxplots and we will address these data points when looking at assumptions.
 
 ```{r,  echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(7,3), dpi=300}
 df_eff %>% ggplot() + geom_boxplot(aes(fill = Brand, y = Time, x = Temp)) + 
@@ -185,37 +187,37 @@ contrast(means_eff, list(temp6_23 = c(1/4, 1/4, -1/4, -1/4, 0, 0, 1/4, 1/4, -1/4
 #knitr::kable(confint(cont_temp))
 ```
 
-Conducting a linear contrast analysis on each of the explanatory variables reveals that there are significant differences between groups based on factors, see Appendix 1 Table 2, 3, 4, and 5 for full results.  
+Conducting a linear contrast analysis on each of the explanatory variables reveals that there are significant differences between groups based on factors, see Appendix 1 Table 2, 3, 4, and 5 for full results.
 
 In the first case, we contrasted the means of stirred versus not stirred. Here the difference in means is -2.41 with an upper 95% confidence limit of -3.04 and a lower 95% CI limit of -1.78. In other words, on average stirring medicine reduces dissolving time by between 3.04 and 1.78 minutes regardless of brand or temperature. When looking only at brand, name brand dissolving times were on average between 4.71 and 5.97 (95% CI) minutes slower than store brand. Since neither of the intervals contained zero we can conclude that there is a difference between brands and between the presence of stirring.
 
 While significant for both store and name brands, stirring had more of an impact to dissolving times for name brand than it did for the store brand. Stirring reduced name brand dissolving times by 2.83 and 4.61 minutes whereas for the store brand that interval was 0.22 and 2 minutes.
 
-A similar analysis was completed for the three levels of temperature. Completing a contrast analysis using a Bonferroni correction we found that in pairwise cases each level was significantly different from the other. The 95% confidence limits were (6.25, 8.38), (13.32, 15.44), and (6.00, 8.13) for the pair wise comparisons of $6^\circ C~vs~23^\circ C$, $6^\circ C~vs~40^\circ C$, and $23^\circ C~vs~40^\circ C$, respectively. Zero did not fall in any of those ranges. When comparing individual levels versus the remainder of the group, $23^\circ C$ was found not to be significantly different from the rest of the levels. That confidence interval ranged from -1.04 to 0.80 minutes of dissolving time. Due to that, we do not have enough evidence to say $23^\circ C$ is different from either $6^\circ C$ or $40^\circ C$.    
+A similar analysis was completed for the three levels of temperature. Completing a contrast analysis using a Bonferroni correction we found that in pairwise cases each level was significantly different from the other. The 95% confidence limits were (6.25, 8.38), (13.32, 15.44), and (6.00, 8.13) for the pair wise comparisons of $6^\circ C~vs~23^\circ C$, $6^\circ C~vs~40^\circ C$, and $23^\circ C~vs~40^\circ C$, respectively. Zero did not fall in any of those ranges. When comparing individual levels versus the remainder of the group, $23^\circ C$ was found not to be significantly different from the rest of the levels. That confidence interval ranged from -1.04 to 0.80 minutes of dissolving time. Due to that, we do not have enough evidence to say $23^\circ C$ is different from either $6^\circ C$ or $40^\circ C$.
 
 ### Model Development
 
 The following models were developed and analyzed for this paper:
 
-$Model~1: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} + (\alpha \gamma)_{ik} + (\gamma \beta)_{jk} + (\alpha \beta \gamma)_{ijk} + \epsilon_{ijkl}$  
-$Model~2: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} + \epsilon_{ijkl}$  
-$Model~3: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + \epsilon_{ijkl}$ 
+$Model~1: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} + (\alpha \gamma)_{ik} + (\gamma \beta)_{jk} + (\alpha \beta \gamma)_{ijk} + \epsilon_{ijkl}$\
+$Model~2: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} + \epsilon_{ijkl}$\
+$Model~3: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + \epsilon_{ijkl}$
 
 Where $\alpha$ is brand effect, $\beta$ is temperature effect, $\gamma$ is stir effect. i, j, k are (1, 2), (1,2,3), and (1,2), respectively. $\epsilon_{ijkl}$ is assumed to be normally distributed with a $\mu_\epsilon$ of 0 and a variance of $\sigma^2_\epsilon$. $\mu$ is the overall mean and is an unknown value.
 
-Mixed Effects models:  
-$Model~4: Y_{ijk} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} + \epsilon_{ijk}$  
-Where both temperature and brand are random.  
-$Model~5: Y_{ijk} = \mu + A_i + \beta_j + \gamma_k + (A \beta)_{ij} + \epsilon_{ijk}$  
-Where temperature is fixed and brand is random.  
-$Model~6: Y_{ijk} = \mu + \alpha_i + B_j + \gamma_k + (\alpha B)_{ij} + \epsilon_{ijk}$  
+Mixed Effects models:\
+$Model~4: Y_{ijk} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} + \epsilon_{ijk}$\
+Where both temperature and brand are random.\
+$Model~5: Y_{ijk} = \mu + A_i + \beta_j + \gamma_k + (A \beta)_{ij} + \epsilon_{ijk}$\
+Where temperature is fixed and brand is random.\
+$Model~6: Y_{ijk} = \mu + \alpha_i + B_j + \gamma_k + (\alpha B)_{ij} + \epsilon_{ijk}$\
 Where temperature is random and brand is fixed.
 
-With order as a factor:  
-$Model~7: Y_{ijklm} = \mu + \alpha_i + \beta_j + \gamma_k + \nu_l + (\alpha \beta)_{ij} + \epsilon_{ijklm}$  
+With order as a factor:\
+$Model~7: Y_{ijklm} = \mu + \alpha_i + \beta_j + \gamma_k + \nu_l + (\alpha \beta)_{ij} + \epsilon_{ijklm}$\
 Similar to model 2, but with an introduced effect, $\nu$, to represent order.
 
-$Model~8: Y_{ijklm} = \mu + \alpha_i + \beta_j + \gamma_k + \nu_l + (\alpha \beta)_{ij} + (\alpha \gamma)_{ik} + (\gamma \beta)_{jk} + (\alpha \beta \gamma)_{ijk} + \epsilon_{ijklm}$  
+$Model~8: Y_{ijklm} = \mu + \alpha_i + \beta_j + \gamma_k + \nu_l + (\alpha \beta)_{ij} + (\alpha \gamma)_{ik} + (\gamma \beta)_{jk} + (\alpha \beta \gamma)_{ijk} + \epsilon_{ijklm}$\
 Similar to model 1, but with an introduced effect, $\nu$, to represent order.
 
 ```{r, echo = FALSE, message = FALSE, error = FALSE}
@@ -249,7 +251,6 @@ aov_block_order_eff <- aov(lm_block_order_eff <- lm(Time ~ Brand * Temp + Stirre
 #ols_plot_cooksd_chart(lm_block_order_eff)
 #added covariate Order to model with 3 factor interaction
 ```
-
 
 ```{r,  echo = FALSE, message = FALSE, error = FALSE}
 #model8
@@ -294,13 +295,13 @@ model7 <- RMSE_function(aov_block_order_eff)
 model8 <- RMSE_function(aov_three_order_eff)
 ```
 
-|Model|Root MSE|$R^2$|$adj~R^2$|AIC|BIC|
-|-|-|-|-|-|-|
-|1|`r model1[1]`|`r model1[2]`|`r model1[3]`|`r model1[4]`|`r model1[5]`|
-|2|`r model2[1]`|`r model2[2]`|`r model2[3]`|`r model2[4]`|`r model2[5]`|
-|3|`r model3[1]`|`r model3[2]`|`r model3[3]`|`r model3[4]`|`r model3[5]`|
-|7|`r model7[1]`|`r model7[2]`|`r model7[3]`|`r model7[4]`|`r model7[5]`|
-|8|`r model8[1]`|`r model8[2]`|`r model8[3]`|`r model8[4]`|`r model8[5]`|
+| Model | Root MSE      | $R^2$         | $adj~R^2$     | AIC           | BIC           |
+|------------|------------|------------|------------|------------|------------|
+| 1     | `r model1[1]` | `r model1[2]` | `r model1[3]` | `r model1[4]` | `r model1[5]` |
+| 2     | `r model2[1]` | `r model2[2]` | `r model2[3]` | `r model2[4]` | `r model2[5]` |
+| 3     | `r model3[1]` | `r model3[2]` | `r model3[3]` | `r model3[4]` | `r model3[5]` |
+| 7     | `r model7[1]` | `r model7[2]` | `r model7[3]` | `r model7[4]` | `r model7[5]` |
+| 8     | `r model8[1]` | `r model8[2]` | `r model8[3]` | `r model8[4]` | `r model8[5]` |
 
 ### Results
 
@@ -409,9 +410,11 @@ knitr::kable(cbind(c('Temp', 'Brand*Temp', 'Residual'),
 ```
 
 ```{r, echo =  FALSE, message=FALSE, error=FALSE, fig.dim=c(7,4), dpi=300}
-knitr::kable(temp_fe, caption = 'Model5: Brand is Random and Temperature is Fixed')
+knitr::kable(temp_fe, caption = 'Model5: Brand is Random and Temperature is Fixed', 
+             digits = 3)
 knitr::kable(cbind(c('Brand', 'Brand*Temp', 'Residual'), 
-                   c(sigma_a, sigma_ab, MSE)), col.names = c('Cov Parm', 'Estimate'), caption = "")
+                   c(sigma_a, sigma_ab, MSE)), col.names = c('Cov Parm', 'Estimate'), 
+             caption = "")
 ```
 
 ```{r, echo =  FALSE, message=FALSE, error=FALSE, fig.dim=c(7,4), dpi=300}
@@ -445,5 +448,6 @@ plot(lm_three_order_eff, pch = 4)
 \newpage
 
 ## Appendix: Code
+
 ```{r, ref.label=knitr::all_labels(),echo=TRUE,eval=FALSE}
 ```
