@@ -61,7 +61,8 @@ means_table <- df_eff %>% group_by(Brand, Temp) %>% summarise('Mean' = mean(Time
 means_table <- means_table %>% pivot_wider(names_from = Brand, values_from = Mean)
 means_table$TempMean <- rowMeans(means_table[,2:3])
 means_table <- cbind('Temp' = c('6', '23', '40', 'Brand Mean'),rbind(means_table[,2:4], colMeans(means_table[,2:4])))
-knitr::kable(means_table, digits = 2, col.names = c("Temp", "Name", "Store", "Temp. Mean"))
+knitr::kable(means_table, digits = 2, col.names = c("Temp", "Name", "Store", "Temp. Mean"),
+             caption = "Means Table")
 ```
 
 When inspecting the marginal means of store versus name brand, we find that store brand dissolves in less time that name brand. This disparity becomes more pronounced as the effect of temperature is introduced. It was observed that increasing temperature has a more dramatic effect on store brand medicine than name brand. Store brand medicine drops from 78.42 to 59.04 ($\Delta$ of -19.38) seconds across a temperature change from 6$^\circ$C to 40$^\circ$C. Whereas, name brand medicine only drops from 77.60 to 68.20 ($\Delta$ of -9.40 seconds) across the same temperature interval.
@@ -233,11 +234,6 @@ qqplot1 <- ggplot(df_eff, aes(sample = Time)) +
 plot_grid(CD_plot, qqplot1)
 ```
 
-```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(7,4), dpi=250}
-#qqnorm(df_eff$Time, pch = 20)
-#qqline(df_eff$Time, col = "maroon", lwd = 2)
-```
-
 Finally, we check the normality of the data. Here a Q-Q plot is generated for the full model residuals. The data appears to suffer from heavy tails, multimodality and/or gaps in data between the left tail and the center. Since downstream analysis hinges on the assumption that our data is normally distributed, these issues may pose a problem.
 
 ## Analysis and Results
@@ -326,6 +322,12 @@ model8 <- RMSE_function(aov_three_order_eff)
 | 3     | `r model3[1]` | `r model3[2]` | `r model3[3]` | `r model3[4]` | `r model3[5]` |
 | 7     | `r model7[1]` | `r model7[2]` | `r model7[3]` | `r model7[4]` | `r model7[5]` |
 | 8     | `r model8[1]` | `r model8[2]` | `r model8[3]` | `r model8[4]` | `r model8[5]` |
+
+### ANOVA Analysis
+
+```{r, echo = FALSE, message = FALSE, error = FALSE}
+knitr::kable(summary(aov_eff)[[1]], 'simple', digits = 3, caption = 'Model 1: ANOVA Table')
+```
 
 ### Contrasts
 
@@ -430,9 +432,11 @@ Temperature is responsible for the largest portion of total variance. $\sigma_\b
 
 The overall dissolving meantime, $\hat{Y}_{...}$, was found to be `r round(mean(df_eff$Time), 3)`. The standard error of that value, $SE(\mu)$ was calculated to be `r se_mu`. From that we find the 95% confidence limit is $\pm$ `r pt(0.975, dof_app)*se_mu`.  
 
-$\widehat{CV}$ was found to be `r round(CV_hat, 3)` 
+$\widehat{CV}$ was found to be `r round(CV_hat, 3)`. 
 
 ## Conclusion
+
+Are we able to answer the questions in the introduction? 
 
 \newpage
 
