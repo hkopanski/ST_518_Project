@@ -1,0 +1,5 @@
+means_stir <- df_eff %>% filter(Stirred == "no") %>% group_by(Brand, Temp) %>% summarise('Mean' = mean(Time))
+means_stir <- means_stir %>% pivot_wider(names_from = Brand, values_from = Mean)
+means_stir$TempMean <- rowMeans(means_stir[,2:3])
+means_stir <- cbind('Temp' = c('6', '23', '40', 'BrandMean'),rbind(means_stir[,2:4], colMeans(means_stir[,2:4])))
+means_stir

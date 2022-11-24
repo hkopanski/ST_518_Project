@@ -1,0 +1,29 @@
+---
+title: "Untitled"
+author: "Halid Kopanski"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+\newpage
+### Introduction 
+For this paper we have been presented with data gathered on the dissolving cold medicine in water. The dataset contains dissolving characteristics of different cold medicine brands done under various environmental conditions. The goal of this paper is to answer the following questions:  
+
+* Are the dissolving characteristics different between brand?
+* Does temperature of the water influence dissolving characteristics? If so, is there an interaction effect between brand and temperature?
+* Does stirring influence dissolving times and what is the interaction effect with the other two variables?  
+
+### Experimental Design  
+
+Data used for this study was obtained from an experiment called the ‘Effervescent Experiment’. The experiment was conducted on two different brands of cold medicine, ‘Name’ and ‘Store’. Each brand was dissolved in water at three different but evenly spaced temperatures, 6$^\circ$C, 23$^\circ$C, and 40$^\circ$C. Data was gathered on each combination of brand and temperature using 4 replications. The experiment was then repeated with the introduction of stirring as a blocking factor. Samples were stirred using a magnetic stirrer spinning at 350 rpm. The data was then tabulated and made available for this analysis. 
+
+### Exploratory Data Analysis  
+
+In total, the provided dataset contains 48 rows and 5 columns. The 5 columns include 3 explanatory categorical variables (Brand, Temp in °C, and Stirring), a single continuous response variable (Time, in minutes) and one descriptor (order). Prior to analysis, the data will be explored to gain a better understanding of what to expect and, more importantly, check for any potential violations of analytical assumptions.  
+First, a simple summary table was created to record data statistics (see Appendix 1, Table 1). We found that each group combination has exactly 4 replications. This eliminates concerns with respect to data imbalance. Overall, the mean dissolve time is 70.77 minutes with a variance of 50.42 minute^2. When taking group means, the fastest time is 58.96 minutes for store brand at 40°C and no stirring (variance 0.12) and the slowest is 78.99 minutes for name brand at 6°C and no stirring (variance 0.415). When calculating group ranges (maximum - minimum), we found the range interval spanned from 0.456 to 6.29.   
+Breaking down by Brand, name mean time is 73.44 minutes whereas store mean time is 68.1. Variance values are 21.12 and 67.03 minutes^2 for name and store, respectively. Stirring reduces the mean time from 71.98 to 69.57 minutes and lessens variance from 55.35 to 44.64 minutes^2. Temperature mean times and variance are tabulated below. 
+
+|Temperature|Mean Time|Variance|
+|-|-|-|
+|6$^\circ$ C|78.0|2.5|
+|23$^\circ$ C|70.70|19.2|
+|40$^\circ$ C|63.62|26.0|
