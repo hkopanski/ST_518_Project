@@ -28,9 +28,9 @@ Text goes here.....
 ### Introduction 
 For this paper we have been presented with data gathered on the dissolving cold medicine in water. The dataset contains dissolving characteristics of different cold medicine brands done under various environmental conditions. The goal of this paper is to answer the following questions:  
 
-* Are the dissolving characteristics different between brand?
+* Are the dissolving characteristics different between brands?
 * Does temperature of the water influence dissolving characteristics? If so, is there an interaction effect between brand and temperature?
-* Does stirring influence dissolving times and what is the interaction effect with the other two variables?  
+* Does stirring influence dissolving times and is there an interaction with the other two effects?  
 
 ### Experimental Design  
 
@@ -87,7 +87,7 @@ The possible interaction between brand and temperature becomes even more noticea
 ##3 factor interaction plot based on HW7 code
 par(mfrow=c(1,2), mar = c(3.5,3.5,2,2))
 with(df_eff%>%filter(Stirred=="yes"),interaction.plot(Temp,Brand,Time,
-            type="b", pch=19, col=c(2,4), ylab="", xlab = "",
+            type="b", pch=20, col=c(2,4), ylab="", xlab = "",
             main="Mean Time vs. Temp: Stirred = Yes", 
             cex.main = 0.75, cex.axis = 0.7, legend = FALSE))
 legend("topright",
@@ -102,7 +102,7 @@ title(xlab = "Temperature", ylab = "Mean Dissolving Time (Minutes)", line = 2.25
 
 #```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
 with(df_eff%>%filter(Stirred=="no"),interaction.plot(Temp,Brand,Time,
-          type="b", pch=19, col=c(2,4), ylab="", xlab = "",
+          type="b", pch=20, col=c(2,4), ylab="", xlab = "",
           main="Mean Time vs. Temp: Stirred = No", 
           cex.main = 0.75, cex.axis = 0.7, legend = FALSE))
 legend("topright",
@@ -119,20 +119,24 @@ title(xlab = 'Temperature', ylab = "Mean Dissolving Time (Minutes)", line = 2.25
 
 In reference to the boxplots, we were able to see a small number of outliers. To confirm if there is any concern we plotted the Cook's Distance for each point based on a full linear model. Point 8 has a higher Cook's distance than the rest of the points which may require removal for analysis if it is suspected of causing issues in the analysis. This would have to be weighed against the risks caused by introducing imbalances.
 
-```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(7,3), dpi=250}
+```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6.5,2.25), dpi=250}
 #model1
 aov_eff <- aov(lm_eff <- lm(Time ~ Brand * Temp * Stirred, data = df_eff))
-
 
 cooksD_values <- cooks.distance(lm_eff)
  
 CD_plot <- ggplot() + 
   geom_col(aes(y = cooksD_values, x = 1:length(cooksD_values)), 
   width = 0.025, col = 'red')  + 
-  geom_point(aes(y = cooksD_values, x = 1:length(cooksD_values))) + 
+  geom_point(aes(y = cooksD_values, x = 1:length(cooksD_values)), shape = 20) + 
   xlab('Sample Points') + ylab("Cook's Distance") + 
   geom_hline(yintercept = 0.25, lty = 2) + 
-  labs(title = "Cook's Distance")
+  labs(title = "Cook's Distance") + 
+  theme(
+      plot.title = element_text(size = 10, face = "bold"),
+      axis.text = element_text(size = 7),
+      axis.title = element_text(size = 8)
+)
 
 #CD_plot <- ols_plot_cooksd_chart(lm_eff)
 qqplot1 <- ggplot(df_eff, aes(sample = Time)) + 
@@ -140,7 +144,12 @@ qqplot1 <- ggplot(df_eff, aes(sample = Time)) +
   stat_qq_line(linetype = "dashed", col = 'red') + 
   labs(x = "Theoretical Quantiles", 
        y = "Sample Quantiles", 
-       title = "Normal Q-Q Plot")
+       title = "Normal Q-Q Plot") + 
+  theme(
+      plot.title = element_text(size = 10, face = "bold"),
+      axis.text = element_text(size = 7),
+      axis.title = element_text(size = 8)
+)
 
 plot_grid(CD_plot, qqplot1)
 ```
@@ -155,6 +164,25 @@ Finally, we check the normality of the data. Here a Q-Q plot is generated for th
 ## Analysis and Results
 
 ### Model Development
+
+```{r, echo = FALSE, message = FALSE, error = FALSE}
+#model with stirred as block effect without interaction
+#model2
+aov_block_eff <- aov(lm_block_eff <- lm(Time ~ Brand * Temp + Stirred, data = df_eff))
+#model3
+aov_block_eff_noint <- aov(lm_block_eff <- lm(Time ~ Brand + Temp + Stirred, data = df_eff))
+```
+
+```{r,  echo = FALSE, message = FALSE, error = FALSE}
+#added covariate Order model with stirred as block effect without interaction
+#model7
+aov_block_order_eff <- aov(lm_block_order_eff <- lm(Time ~ Brand * Temp + Stirred + Order, data = df_eff))
+```
+
+```{r,  echo = FALSE, message = FALSE, error = FALSE}
+#model8
+aov_three_order_eff <- aov(lm_three_order_eff <- lm(Time ~ Brand * Temp * Stirred + Order, data = df_eff))
+```
 
 The following models were developed and analyzed for this paper:
 
@@ -178,6 +206,47 @@ Similar to model 2, but with an introduced effect, $\nu$, to represent order.
 
 $Model~8: Y_{ijklm} = \mu + \alpha_i + \beta_j + \gamma_k + \nu_l + (\alpha \beta)_{ij} + (\alpha \gamma)_{ik} + (\gamma \beta)_{jk} + (\alpha \beta \gamma)_{ijk} + \epsilon_{ijklm}$\
 Similar to model 1, but with an introduced effect, $\nu$, to represent order.
+
+### Model Selection
+
+```{r,  echo = FALSE, message = FALSE, error = FALSE}
+RMSE_function <- function(df_aov){
+    
+    r_mse <- sqrt(sum(df_aov$residuals^2)/df_aov$df)
+    
+    r_s <- 1 - tail(summary(df_aov)[1][[1]][[2]], n = 1) / sum(summary(df_aov)[1][[1]][2])
+
+    a_r_s <- 1 - (1 - r_s)*(nrow(df_aov$model) - 1)/(df_aov$df)
+    
+    aic_ <- AIC(df_aov)
+    
+    bic_ <- BIC(df_aov)
+    
+    output_stats <- c(
+        r_mse,
+        r_s,
+        a_r_s,
+        aic_,
+        bic_
+    )
+    return(output_stats)
+}
+
+
+model1 <- RMSE_function(aov_eff)
+model2 <- RMSE_function(aov_block_eff)
+model3 <- RMSE_function(aov_block_eff_noint)
+model7 <- RMSE_function(aov_block_order_eff)
+model8 <- RMSE_function(aov_three_order_eff)
+```
+
+| Model | Root MSE      | $R^2$         | $adj~R^2$     | AIC           | BIC           |
+|------------|------------|------------|------------|------------|------------|
+| 1     | `r model1[1]` | `r model1[2]` | `r model1[3]` | `r model1[4]` | `r model1[5]` |
+| 2     | `r model2[1]` | `r model2[2]` | `r model2[3]` | `r model2[4]` | `r model2[5]` |
+| 3     | `r model3[1]` | `r model3[2]` | `r model3[3]` | `r model3[4]` | `r model3[5]` |
+| 7     | `r model7[1]` | `r model7[2]` | `r model7[3]` | `r model7[4]` | `r model7[5]` |
+| 8     | `r model8[1]` | `r model8[2]` | `r model8[3]` | `r model8[4]` | `r model8[5]` |
 
 ### Contrasts
 
@@ -220,25 +289,6 @@ In the first case, we contrasted the means of stirred versus not stirred. Here t
 While significant for both store and name brands, stirring had more of an impact to dissolving times for name brand than it did for the store brand. Stirring reduced name brand dissolving times by 2.83 and 4.61 minutes whereas for the store brand that interval was 0.22 and 2 minutes.
 
 A similar analysis was completed for the three levels of temperature. Completing a contrast analysis using a Bonferroni correction we found that in pairwise cases each level was significantly different from the other. The 95% confidence limits were (6.25, 8.38), (13.32, 15.44), and (6.00, 8.13) for the pair wise comparisons of $6^\circ C~vs~23^\circ C$, $6^\circ C~vs~40^\circ C$, and $23^\circ C~vs~40^\circ C$, respectively. Zero did not fall in any of those ranges. When comparing individual levels versus the remainder of the group, $23^\circ C$ was found not to be significantly different from the rest of the levels. That confidence interval ranged from -1.04 to 0.80 minutes of dissolving time. Due to that, we do not have enough evidence to say $23^\circ C$ is different from either $6^\circ C$ or $40^\circ C$.
-
-```{r, echo = FALSE, message = FALSE, error = FALSE}
-#model with stirred as block effect without interaction
-#model2
-aov_block_eff <- aov(lm_block_eff <- lm(Time ~ Brand * Temp + Stirred, data = df_eff))
-#model3
-aov_block_eff_noint <- aov(lm_block_eff <- lm(Time ~ Brand + Temp + Stirred, data = df_eff))
-```
-
-```{r,  echo = FALSE, message = FALSE, error = FALSE}
-#added covariate Order model with stirred as block effect without interaction
-#model7
-aov_block_order_eff <- aov(lm_block_order_eff <- lm(Time ~ Brand * Temp + Stirred + Order, data = df_eff))
-```
-
-```{r,  echo = FALSE, message = FALSE, error = FALSE}
-#model8
-aov_three_order_eff <- aov(lm_three_order_eff <- lm(Time ~ Brand * Temp * Stirred + Order, data = df_eff))
-```
 
 ### Random Effects Analysis
 
@@ -302,48 +352,6 @@ Temperature is responsible for the largest portion of total variance. $\sigma_\b
 The overall dissolving meantime, $\hat{Y}_{...}$, was found to be `r round(mean(df_eff$Time), 3)`. The standard error of that value, $SE(\mu)$ was calculated to be `r se_mu`. From that we find the 95% confidence limit is $\pm$ `r pt(0.975, dof_app)*se_mu`.  
 
 $\widehat{CV}$ was found to be `r round(CV_hat, 3)` 
-
-### Model Selection
-
-```{r,  echo = FALSE, message = FALSE, error = FALSE}
-RMSE_function <- function(df_aov){
-    
-    r_mse <- sqrt(sum(df_aov$residuals^2)/df_aov$df)
-    
-    r_s <- 1 - tail(summary(df_aov)[1][[1]][[2]], n = 1) / sum(summary(df_aov)[1][[1]][2])
-
-    a_r_s <- 1 - (1 - r_s)*(nrow(df_aov$model) - 1)/(df_aov$df)
-    
-    aic_ <- AIC(df_aov)
-    
-    bic_ <- BIC(df_aov)
-    
-    output_stats <- c(
-        r_mse,
-        r_s,
-        a_r_s,
-        aic_,
-        bic_
-    )
-    return(output_stats)
-}
-
-
-model1 <- RMSE_function(aov_eff)
-model2 <- RMSE_function(aov_block_eff)
-model3 <- RMSE_function(aov_block_eff_noint)
-model7 <- RMSE_function(aov_block_order_eff)
-model8 <- RMSE_function(aov_three_order_eff)
-```
-
-| Model | Root MSE      | $R^2$         | $adj~R^2$     | AIC           | BIC           |
-|------------|------------|------------|------------|------------|------------|
-| 1     | `r model1[1]` | `r model1[2]` | `r model1[3]` | `r model1[4]` | `r model1[5]` |
-| 2     | `r model2[1]` | `r model2[2]` | `r model2[3]` | `r model2[4]` | `r model2[5]` |
-| 3     | `r model3[1]` | `r model3[2]` | `r model3[3]` | `r model3[4]` | `r model3[5]` |
-| 7     | `r model7[1]` | `r model7[2]` | `r model7[3]` | `r model7[4]` | `r model7[5]` |
-| 8     | `r model8[1]` | `r model8[2]` | `r model8[3]` | `r model8[4]` | `r model8[5]` |
-
 
 ## Conclusion
 
