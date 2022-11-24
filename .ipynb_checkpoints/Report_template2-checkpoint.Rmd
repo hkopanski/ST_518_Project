@@ -60,11 +60,11 @@ summarise('Min' = min(Time),
 means_table <- df_eff %>% group_by(Brand, Temp) %>% summarise('Mean' = mean(Time))
 means_table <- means_table %>% pivot_wider(names_from = Brand, values_from = Mean)
 means_table$TempMean <- rowMeans(means_table[,2:3])
-means_table <- cbind('Temp' = c('6', '23', '40', 'Brand Mean'),rbind(means_table[,2:4], colMeans(means_table[,2:4])))
-knitr::kable(means_table, digits = 2, col.names = c("Temp", "Name", "Store", "Temp. Mean"))
+means_table <- cbind('Temp' = c('6', '23', '40', 'BrandMean'),rbind(means_table[,2:4], colMeans(means_table[,2:4])))
+knitr::kable(means_table)
 ```
 
-When inspecting the marginal means of store versus name brand, we find that store brand dissolves in less time that name brand. This disparity becomes more pronounced as the effect of temperature is introduced. It was observed that increasing temperature has a more dramatic effect on store brand medicine than name brand. Store brand medicine drops from 78.42 to 59.04 ($\Delta$ of -19.38) seconds across a temperature change from 6$^\circ$C to 40$^\circ$C. Whereas, name brand medicine only drops from 77.60 to 68.20 ($\Delta$ of -9.40 seconds) across the same temperature interval.
+When inspecting the marginal means of store versus name brand, we find that store brand dissolves in less time that name brand. This disparity becomes more pronounced as the effect of temperature is introduced. It was observed that increasing has a more dramatic effect on store brand medicine than name brand. Store brand medicine drops from 78.42 to 59.04 ($\Delta$ of -19.38) seconds across a temperature change from 6$^\circ$C to 6$^\circ$C. Whereas, name brand medicine only drops from 77.60 to 68.20 ($\Delta$ of -9.40 seconds) across the same temperature interval.
 
 ```{r,  echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6.5, 2.1), dpi=300}
 change_var <-
@@ -80,7 +80,7 @@ ggplot(change_var) + geom_point(aes(x = Temp, y = Var, col = Brand)) +
                           subtitle = "Over Temperature",
                           x = '',
                           y = 'Variance') +
-                     theme(legend.position = c(0.85, 0.75),
+                     theme(legend.position = c(0.8, 0.7),
                            plot.title = element_text(size = 8, face = "bold"),
                            plot.subtitle = element_text(size = 7, face = "bold"),
                            axis.text = element_text(size = 7),
@@ -440,11 +440,6 @@ $\widehat{CV}$ was found to be `r round(CV_hat, 3)`
 
 ```{r, echo =  FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3.5), dpi=300}
 knitr::kable(df_stats, caption = "Data Summary Table")
-df_eff %>% group_by(Brand) %>% summarise('Mean' = mean(Time), 'Var' = var(Time),'Max' = max(Time), 'Min' = min(Time), 'Spread' = Max - Min) %>% knitr::kable()
-df_eff %>% group_by(Temp) %>% summarise('Mean' = mean(Time), 'Var' = var(Time), 'Max' = max(Time), 'Min' = min(Time), 'Spread' = Max - Min) %>% knitr::kable()
-df_eff %>% group_by(Brand, Temp) %>% summarise('Mean' = mean(Time), 'Var' = var(Time), 'Max' = max(Time), 'Min' = min(Time), 'Spread' = Max - Min) %>% knitr::kable()
-df_eff %>% group_by(Brand, Stirred) %>% summarise('Mean' = mean(Time), 'Var' = var(Time), 'Max' = max(Time), 'Min' = min(Time), 'Spread' = Max - Min) %>% knitr::kable()
-df_eff %>% group_by(Temp, Stirred) %>% summarise('Mean' = mean(Time), 'Var' = var(Time), 'Max' = max(Time), 'Min' = min(Time), 'Spread' = Max - Min) %>% knitr::kable()
 knitr::kable(summary(means_eff), caption = "Least Squares Means")
 knitr::kable(confint(cont_str_brd), caption = "Contrast Stirred and Brand")
 knitr::kable(confint(cont_strbrd), caption = "Contrast Stirred versus Brand")
