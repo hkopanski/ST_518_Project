@@ -163,9 +163,9 @@ df_eff %>% ggplot() + geom_boxplot(aes(fill = Brand, y = Time, x = Temp)) +
 
 The possible interaction between brand and temperature becomes even more noticeable in the preceding three-factor interaction plots. Specifically, the brand and temperature interaction can be seen when the temperature increases. The slope for the store brand has a more pronounced negative slope than the slope of the name brand. In addition, there might be a slight three-factor interaction between brand, temperature, and stirring as the name and store brand lines appear to be closer together in the stirred=yes plot than the stirred=no plot.
 
-```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(7,2.5), dpi=250}
+```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6.5,4), dpi=250}
 ##3 factor interaction plot based on HW7 code
-par(mfrow=c(1,2), mar = c(3.5,3.5,2,2))
+par(mfrow=c(2,2), mar = c(3.5,3.5,2,2))
 with(df_eff%>%filter(Stirred=="yes"),interaction.plot(Temp,Brand,Time,
             type="b", pch=20, col=c(2,4), ylab="", xlab = "",
             main="Mean Time vs. Temp: Stirred = Yes", 
@@ -177,10 +177,8 @@ legend("topright",
        cex = 0.7,
        col = c("#DF536B","#2297E6"),
        pch = c(19,19), lty = c(2,1))
-title(xlab = "Temperature", ylab = "Mean Dissolving Time (Minutes)", line = 2.25, cex.lab = 0.7)
-#```
+title(xlab = "Temperature", ylab = "Mean Dissolving Time", line = 2.25, cex.lab = 0.7)
 
-#```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3), dpi=250}
 with(df_eff%>%filter(Stirred=="no"),interaction.plot(Temp,Brand,Time,
           type="b", pch=20, col=c(2,4), ylab="", xlab = "",
           main="Mean Time vs. Temp: Stirred = No", 
@@ -192,7 +190,32 @@ legend("topright",
        cex = 0.7,
        col = c("#DF536B","#2297E6"),
        pch = c(19,19), lty = c(2,1))
-title(xlab = 'Temperature', ylab = "Mean Dissolving Time (Minutes)", line = 2.25, cex.lab = 0.7)
+title(xlab = 'Temperature', ylab = "Mean Dissolving Time", line = 2.25, cex.lab = 0.7)
+with(df_eff%>%filter(Brand=="store"),interaction.plot(Temp,Stirred,Time,
+            type="b", pch=20, col=c(2,4), ylab="", xlab = "",
+            main="Mean Time vs. Temp: Brand = Store", 
+            cex.main = 0.75, cex.axis = 0.7, legend = FALSE))
+legend("topright",
+       title = "Stirred",
+       c("Yes", "No"),
+       bty = "n",
+       cex = 0.7,
+       col = c("#DF536B","#2297E6"),
+       pch = c(19,19), lty = c(2,1))
+title(xlab = "Temperature", ylab = "Mean Dissolving Time", line = 2.25, cex.lab = 0.7)
+
+with(df_eff%>%filter(Brand=="name"),interaction.plot(Temp,Stirred,Time,
+          type="b", pch=20, col=c(2,4), ylab="", xlab = "",
+          main="Mean Time vs. Temp: Brand = Name", 
+          cex.main = 0.75, cex.axis = 0.7, legend = FALSE))
+legend("topright",
+       title = "Stirred",
+       c("Yes", "No"),
+       bty = "n",
+       cex = 0.7,
+       col = c("#DF536B","#2297E6"),
+       pch = c(19,19), lty = c(2,1))
+title(xlab = 'Temperature', ylab = "Mean Dissolving Time", line = 2.25, cex.lab = 0.7)
 ```
 
 ### Assumptions and Violations
