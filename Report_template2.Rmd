@@ -355,9 +355,6 @@ contrast(means_eff, list(temp6_23 = c(1/4, 1/4, -1/4, -1/4, 0, 0, 1/4, 1/4, -1/4
                          temp40_rest = c(-1/8, -1/8, -1/8, -1/8, 1/4, 1/4, -1/8, -1/8, -1/8, -1/8, 1/4, 1/4)
                          ), options=list(adjust="bonferroni")
          )
-#knitr::kable(confint(cont_str_brd))
-#knitr::kable(confint(cont_strbrd))
-#knitr::kable(confint(cont_temp))
 ```
 
 Conducting a linear contrast analysis on each of the explanatory variables reveals that there are significant differences between groups based on factors, see Appendix 1 Table 2, 3, 4, and 5 for full results.
