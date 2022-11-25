@@ -308,20 +308,17 @@ RMSE_function <- function(df_aov){
 }
 
 
-model1 <- RMSE_function(aov_eff)
-model2 <- RMSE_function(aov_block_eff)
-model3 <- RMSE_function(aov_block_eff_noint)
-model7 <- RMSE_function(aov_block_order_eff)
-model8 <- RMSE_function(aov_three_order_eff)
+Model1 <- RMSE_function(aov_eff)
+Model2 <- RMSE_function(aov_block_eff)
+Model3 <- RMSE_function(aov_block_eff_noint)
+Model7 <- RMSE_function(aov_block_order_eff)
+Model8 <- RMSE_function(aov_three_order_eff)
+
+d <- rbind(Model1, Model2, Model3, Model7, Model8)
+colnames(d) <- c('Root MSE', '$R^2$', 'adj $R^2$', 'AIC', 'BIC')
+knitr::kable(d, escape = FALSE, digits = 3, align = "ccccc")
 ```
 
-| Model | Root MSE      | $R^2$         | $adj~R^2$     | AIC           | BIC           |
-|------------|------------|------------|------------|------------|------------|
-| 1     | `r model1[1]` | `r model1[2]` | `r model1[3]` | `r model1[4]` | `r model1[5]` |
-| 2     | `r model2[1]` | `r model2[2]` | `r model2[3]` | `r model2[4]` | `r model2[5]` |
-| 3     | `r model3[1]` | `r model3[2]` | `r model3[3]` | `r model3[4]` | `r model3[5]` |
-| 7     | `r model7[1]` | `r model7[2]` | `r model7[3]` | `r model7[4]` | `r model7[5]` |
-| 8     | `r model8[1]` | `r model8[2]` | `r model8[3]` | `r model8[4]` | `r model8[5]` |
 
 ### ANOVA Analysis
 
