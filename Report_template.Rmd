@@ -6,7 +6,7 @@ output:
   pdf_document
 ---
 
-```{r,  echo = FALSE, message = FALSE, error = FALSE}
+```{r echo=FALSE, error=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(emmeans)
 library(lme4)
@@ -206,12 +206,12 @@ $Model~3: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + \epsilon_{ijkl}$
 Where $\alpha$ is brand effect, $\beta$ is temperature effect, $\gamma$ is stir effect. i, j, k are (1, 2), (1,2,3), and (1,2), respectively. $\epsilon_{ijkl}$ is assumed to be normally distributed with a $\mu_\epsilon$ of 0 and a variance of $\sigma^2_\epsilon$. $\mu$ is the overall mean and is an unknown value.
 
 Mixed Effects models:\
-$Model~4: Y_{ijk} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} + \epsilon_{ijk}$\
-Where both temperature and brand are random.\
-$Model~5: Y_{ijk} = \mu + A_i + \beta_j + \gamma_k + (A \beta)_{ij} + \epsilon_{ijk}$\
-Where temperature is fixed and brand is random.\
-$Model~6: Y_{ijk} = \mu + \alpha_i + B_j + \gamma_k + (\alpha B)_{ij} + \epsilon_{ijk}$\
-Where temperature is random and brand is fixed.
+$Model~4: Y_{ijk} = \mu + \alpha_i + B_j + (\alpha B)_{ij} + \epsilon_{ijk}$\
+Where brand is fixed and temperature is random.  
+$Model~5: Y_{ijk} = \mu + A_i + \beta_j  + (A \beta)_{ij} + \epsilon_{ijk}$\
+Where brand is random and temperature is fixed.\
+$Model~6: Y_{ijk} = \mu + A_i + B_j  + (AB)_{ij} + \epsilon_{ijk}$\
+Where both brand and temperature are random.\
 
 With order as a factor:\
 $Model~7: Y_{ijklm} = \mu + \alpha_i + \beta_j + \gamma_k + \nu_l + (\alpha \beta)_{ij} + \epsilon_{ijklm}$\
@@ -302,6 +302,8 @@ model8 <- RMSE_function(aov_three_order_eff)
 | 3     | `r model3[1]` | `r model3[2]` | `r model3[3]` | `r model3[4]` | `r model3[5]` |
 | 7     | `r model7[1]` | `r model7[2]` | `r model7[3]` | `r model7[4]` | `r model7[5]` |
 | 8     | `r model8[1]` | `r model8[2]` | `r model8[3]` | `r model8[4]` | `r model8[5]` |
+
+The mixed/random effects Models 4, 5, 6 all had Root MSE=1.833 (see Appendix 1, Table 13).  
 
 ### Results
 
