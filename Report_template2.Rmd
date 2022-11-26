@@ -42,7 +42,7 @@ Data used for this study was obtained from an experiment called the ‘Effervesc
 
 In total, the provided dataset contains 48 rows and 5 columns. The 5 columns include 3 explanatory categorical variables (Brand, Temp in $^\circ$C, and Stirring), a single continuous response variable (Time, in minutes) and one descriptor (order). Prior to analysis, the data will be explored to gain a better understanding of what to expect and, more importantly, check for any potential violations of analytical assumptions.
 
-From the summary statistics table (see Appendix 1, Table 1), we can see that each group has exactly 4 entries, eliminating concerns with respect to design imbalance. Constructing a means table for the data without taking into account stirring. We can see that there does appear to be a disparity between the mean dissolving times of store brand cold medications when compared to name brand. 
+From the summary statistics table (see Appendix 1, Table 1), we can see that each group has exactly 4 entries, eliminating concerns with respect to design imbalance. Constructing a means table for the data without taking into account stirring, we can see that there does appear to be a disparity between the mean dissolving times of store brand cold medications when compared to name brand. 
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE}
 df_stats <-
@@ -65,7 +65,7 @@ knitr::kable(means_table, digits = 2, col.names = c("Temp", "Name", "Store", "Te
              caption = "Means Table")
 ```
 
-When inspecting the marginal means of store versus name brand, we find that store brand dissolves in less time that name brand. This disparity becomes more pronounced as the effect of temperature is introduced. It was observed that increasing temperature has a more dramatic effect on store brand medicine than name brand. Store brand medicine drops from 78.42 to 59.04 ($\Delta$ of -19.38) seconds across a temperature change from 6$^\circ$C to 40$^\circ$C. Whereas, name brand medicine only drops from 77.60 to 68.20 ($\Delta$ of -9.40 seconds) across the same temperature interval.
+When inspecting the marginal means of store versus name brand, we find that store brand dissolves in less time, on average, than the name brand. This disparity becomes more pronounced as the effect of temperature is introduced. It was observed that increasing temperature has a more dramatic effect on store brand medicine than name brand. Dissolving time for store brand medicine drops from 78.42 to 59.04 ($\Delta$ of -19.38) seconds across a temperature change from 6$^\circ$C to 40$^\circ$C. Whereas, name brand medicine only drops from 77.60 to 68.20 ($\Delta$ of -9.40 seconds) across the same temperature change.
 
 ```{r,  echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6.5, 2.1), dpi=300}
 change_var <-
@@ -148,9 +148,15 @@ plot_grid(change_varplot,change_var2plot,change_var3plot, ncol = 3)
 
 Next, consider the range in variability at each factor and level. The range in values of the variance is 6.9458; an interesting result considering nine of the twelve observable variances fall within a range of 0.04 and 1.69. The variability between observations of name brand cold medicines are elevated, especially in cases when the observation was stirred at 23$^\circ$C and 40$^\circ$C. Variance of non-stirred observations, particularly within temperature values of 23$^\circ$C and 40$^\circ$C, are noticeably lower than their stirred counterparts within the same brand. The variance seems to jump by a large amount between the groups.
 
-When plotting the data in a boxplot, there is a noticeable increase in the variance of the name brand medicine in the stirred block versus the non stirred. Additionally, stirring produced a decrease in the mean differences of brand within each temperature grouping. Earlier, we had introduce an insight from the summary statistics output indicating an inverse relationship between temperature and dissolve time--as temperature increases dissolve time decreases. The boxplot reinforces this idea. 
+The scatterplots show there is a noticeable increase in the variance of the name brand medicine in the stirred block versus the non stirred especially at higher temperatures. Turning our attention to the boxplot we can observe that stirring produced a decrease in the mean differences of brand within each temperature grouping. Earlier, we had introduce an insight from the summary statistics output indicating an inverse relationship between temperature and dissolve time--as temperature increases dissolve time decreases. The boxplot reinforces this idea. 
 
-It is simply conjecture at this point, however we noticed that observations of dissolve time while stirring the water seems to have increased the name brand variability, while not stirring the water seems to have increased the store brand variability. Perhaps worth looking into the blocking effects of stirred on variability at various temperatures.
+Further contextualizing central tendency and spread, we can see this illustrated in a different perspective by grouping effects together.  Take note that temperature has the smallest set of ranges, both at each level and as a whole when compared to brand type and stirring effect.  There is not a lot of variability among temperatures compared to the other effects though they are different enough to identify an irregular increase as temperature increases.  The range of values provides additional context to the data's story; data points when focused only on temperature groups tend to be within a smaller range of each other indicating less variability; meanwhile, brand and stirring effects have a wider distribution and more variability--outliers withstanding.
+
+### Interactions
+
+From the boxplots below, we can immediately see that stirring seems to increase the variance of the name-brand medicine--while also decreasing the mean differences of brand observations within each temperature grouping.  An interaction effect between temperature and brand can be deduced if lines are drawn through the centers of the boxes. Earlier, we had introduced an insight from the summary statistics output indicating an inverse relationship between temperature and dissolve time--as temperature increases dissolve time decreases.  The boxplot reinforces this idea.  We can also claim that temperature has an inverse effect on dissolving times whether stirring is present or not--indications of temperature having a strong effect on dissolving time by itself.  Stirring might have an additive effect regardless of temperature.
+
+It is simply conjectured at this point, however, we noticed that observations of dissolve time while stirring the water seems to have increased the name brand variability, while not stirring the water seems to have increased the store brand variability.  Perhaps worth looking into the blocking effects of stirred on variability at various temperatures. 
 
 ```{r,  echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6.5, 2.5), dpi=300}
 df_eff %>% ggplot() + geom_boxplot(aes(fill = Brand, y = Time, x = Temp)) + 
@@ -158,8 +164,6 @@ df_eff %>% ggplot() + geom_boxplot(aes(fill = Brand, y = Time, x = Temp)) +
   plot.title = element_text(hjust = 0.5)
 )
 ```
-
-### Interactions
 
 The possible interaction between brand and temperature becomes even more noticeable in the preceding three-factor interaction plots. Specifically, the brand and temperature interaction can be seen when the temperature increases. The slope for the store brand has a more pronounced negative slope than the slope of the name brand. In addition, there might be a slight three-factor interaction between brand, temperature, and stirring as the name and store brand lines appear to be closer together in the stirred=yes plot than the stirred=no plot.
 
@@ -291,12 +295,12 @@ $Model~3: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + \epsilon_{ijkl}$
 Where $\alpha$ is brand effect, $\beta$ is temperature effect, $\gamma$ is stir effect. i, j, k are (1, 2), (1,2,3), and (1,2), respectively. $\epsilon_{ijkl}$ is assumed to be normally distributed with a $\mu_\epsilon$ of 0 and a variance of $\sigma^2_\epsilon$. $\mu$ is the overall mean and is an unknown value.
 
 Mixed Effects models:\
-$Model~4: Y_{ijk} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} + \epsilon_{ijk}$\
-Where both temperature and brand are random.\
-$Model~5: Y_{ijk} = \mu + A_i + \beta_j + \gamma_k + (A \beta)_{ij} + \epsilon_{ijk}$\
-Where temperature is fixed and brand is random.\
-$Model~6: Y_{ijk} = \mu + \alpha_i + B_j + \gamma_k + (\alpha B)_{ij} + \epsilon_{ijk}$\
-Where temperature is random and brand is fixed.
+$Model~4: Y_{ijk} = \mu + \alpha_i + B_j + (\alpha B)_{ij} + \epsilon_{ijk}$\
+Where brand is fixed and temperature is random.  
+$Model~5: Y_{ijk} = \mu + A_i + \beta_j  + (A \beta)_{ij} + \epsilon_{ijk}$\
+Where brand is random and temperature is fixed.\
+$Model~6: Y_{ijk} = \mu + A_i + B_j  + (AB)_{ij} + \epsilon_{ijk}$\
+Where both brand and temperature are random.\
 
 With order as a factor:\
 $Model~7: Y_{ijklm} = \mu + \alpha_i + \beta_j + \gamma_k + \nu_l + (\alpha \beta)_{ij} + \epsilon_{ijklm}$\
@@ -342,12 +346,22 @@ colnames(d) <- c('Root MSE', '$R^2$', 'adj $R^2$', 'AIC', 'BIC')
 knitr::kable(d, escape = FALSE, digits = 3, align = "ccccc")
 ```
 
+The mixed/random effects Models 4, 5, 6 all had Root MSE=1.833 (see Appendix 1, Table 13).  
 
 ### ANOVA Analysis
 
 ```{r, echo = FALSE, message = FALSE, error = FALSE}
 knitr::kable(summary(aov_eff)[[1]], 'simple', digits = 3, caption = 'Model 1: ANOVA Table')
 ```
+
+Our null and alternative hypotheses are:
+
+$H_o:$ All the means are.......  
+$H_a:$ Not the null  
+
+We found that.....   
+
+
 
 ### Contrasts
 
@@ -445,7 +459,23 @@ Expanding Table 20 from Appendix 1 to include portion of variance due to effect,
 knitr::kable(re_table)
 ```
 
-Temperature is responsible for the largest portion of total variance. $\sigma_\beta^2$, at value of 44.465, explains 62.3% of the total variance ($\hat{\sigma}_{total}^2$ being 71.32).
+The results from the ANOVA analysis are based on the following:
+
+For brand:  
+$H_o:$ $\sigma_{\alpha}^2$ is equal to zero  
+$H_a:$ $\sigma_{\alpha}^2$ is not equal to zero 
+
+For temperature:  
+$H_o:$ $\sigma_{\beta}^2$ is equal to zero  
+$H_a:$ $\sigma_{\beta}^2$ is not equal to zero
+
+For interaction:  
+$H_o:$ $\sigma_{\alpha \beta}^2$ is equal to zero  
+$H_a:$ $\sigma_{\alpha \beta}^2$ is not equal to zero
+
+The calculated critical f score is `r qf(0.95, 2, 2)` using an $\alpha$ of 0.05 and (2, 2) degrees of freedom. The f score for brand and for temperature were below the critical f score. Brand produced an f score of 2.95 and Temperature produced a score of 7.14. In both cases, the null hypothesis was not rejected, therefore,  $\sigma_{\alpha}^2$ =  $\sigma_{\beta}^2$ = 0. On the other hand, the critical value for the interaction variance is is `r qf(0.95, 2, 42)` using an $\alpha$ of 0.05 and (2, 42) degrees of freedom. At a value of 34.5, we are able to reject the null hypothesis in favor of the alternative. The variance associated with the interaction effect is significant.
+
+Further analysis determines, temperature is responsible for the largest portion of total variance. $\sigma_\beta^2$, at value of 44.465, explains 62.3% of the total variance ($\hat{\sigma}_{total}^2$ being 71.32).
 
 The overall dissolving meantime, $\hat{Y}_{...}$, was found to be `r round(mean(df_eff$Time), 3)`. The standard error of that value, $SE(\mu)$ was calculated to be `r se_mu`. From that we find the 95% confidence limit is $\pm$ `r pt(0.975, dof_app)*se_mu`.  
 
