@@ -74,6 +74,14 @@ df_eff %>% group_by(Brand, Temp) %>% summarise('Mean' = mean(Time),
                                                'Max' = max(Time), 
                                                'Min' = min(Time), 
                                                'Spread' = Max - Min)
+
+var_table <- df_eff %>% group_by(Brand, Temp, Stirred) %>% summarise('Var' = var(Time))
+
+var_table$Group <- ifelse(var_table$Brand == 'name' & var_table$Stirred == 'yes', 'Stirred Brand',
+                          ifelse(var_table$Brand == 'name' & var_table$Stirred == 'no', 'Non Stirred Brand',
+                                 ifelse(var_table$Brand == 'store' & var_table$Stirred == 'yes', 'Stirred Store',
+                                        ifelse(var_table$Brand == 'store' & var_table$Stirred == 'no', 'Non Stirred Store', NA))))
+
 change_varplot <-
 ggplot(change_var) + geom_point(aes(x = Temp, y = Var, col = Brand)) +
                      geom_line(aes(x = Temp, y = Var, col = Brand, group = Brand)) + 
@@ -139,11 +147,30 @@ ggplot(change_var3) + geom_point(aes(x = Temp, y = Var, col = Brand)) +
                            legend.text = element_text(size=5, face="bold"),
                            legend.title = element_text(size=6, face="bold"),
                            legend.key.size = unit(0.4, 'cm'),
-                           legend.key = element_rect(colour = "transparent", 
-                                                     fill = alpha("white", 0)),                                          legend.background = element_rect(
-                                                     fill = alpha("white", 0)))
+                           legend.key = element_rect(colour = "transparent", fill = alpha("white", 0)),                                            legend.background = element_rect(fill = alpha("white", 0))
+                           )
 
-plot_grid(change_varplot,change_var2plot,change_var3plot, ncol = 3)
+change_var4plot <- 
+ggplot(var_table) + geom_point(aes(x = Temp, y = Var, col = Group)) + 
+    geom_line(aes(x = Temp, y = Var, col = Group, group = Group)) +
+    geom_hline(yintercept = 2, lty = 'dashed') +
+         labs(title = "Change in Variance",
+              subtitle = "Over Temperature (Combined)",
+              x = '',
+              y = '') +
+         theme(legend.position = c(0.85, 0.8),
+               plot.title = element_text(size = 8, face = "bold"),
+               plot.subtitle = element_text(size = 7, face = "bold"),
+               axis.text = element_text(size = 7),
+               axis.title = element_text(size = 8),
+               legend.text = element_text(size=5, face="bold"),
+               legend.title = element_text(size=6, face="bold"),
+               legend.key.size = unit(0.4, 'cm'),
+               legend.key = element_rect(colour = "transparent", fill = alpha("white", 0)),
+               legend.background = element_rect(fill = alpha("white", 0))
+               )
+
+plot_grid(change_varplot,change_var4plot, nrow = 1 , ncol = 2)
 ```
 
 Next, consider the range in variability at each factor and level. The range in values of the variance is 6.9458; an interesting result considering nine of the twelve observable variances fall within a range of 0.04 and 1.69. The variability between observations of name brand cold medicines are elevated, especially in cases when the observation was stirred at 23$^\circ$C and 40$^\circ$C. Variance of non-stirred observations, particularly within temperature values of 23$^\circ$C and 40$^\circ$C, are noticeably lower than their stirred counterparts within the same brand. The variance seems to jump by a large amount between the groups.
