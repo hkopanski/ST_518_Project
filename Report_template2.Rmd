@@ -377,12 +377,43 @@ The mixed/random effects Models 4, 5, 6 all had Root MSE=1.833 (see Appendix 1, 
 knitr::kable(summary(aov_eff)[[1]], 'simple', digits = 3, caption = 'Model 1: ANOVA Table')
 ```
 
+
+
 Our null and alternative hypotheses are:
 
-$H_o:$ All the means are.......  
-$H_a:$ Not the null  
+$H_0:$  
+$H_1:$ 
 
 We found that.....   
+
+###### Test Interaction Effect
+
+$H_0: (\alpha\beta)_{ij} = 0$ 
+$H_1: (\alpha\beta)_{ij} \neq 0$ 
+Criteria:  Reject $H_0$ when F-CRIT < F
+F = $\frac{MS[\alpha\beta]}{MS[E]} = \frac{115.926}{1.155} = 100.3688$
+F-CRIT = $F_{(0.95,2,36)} = 3.2594$
+Decision:  $Reject H_0$.  There is sufficient evidence to support the claim that there is an interaction effect between brand type and temperature with a significance level of 0.95. 
+
+$H_0: (\alpha\gamma)_{ik} = 0$ 
+$H_1: (\alpha\gamma)_{ik} \neq 0$ 
+Criteria:  Reject $H_0$ when F-CRIT < F
+F = $\frac{MS[\alpha\gamma]}{MS[E]} = \frac{20.510}{1.155} = 17.758$
+F-CRIT = $F_{(0.95,1,36)} = 4.1132$
+Decision:  $Reject H_0$.  There is sufficient evidence to support the claim that there is an interaction effect between brand type and stirring with a significance level of 0.95. 
+
+$H_0: (\alpha\beta)_{ij} = 0$ 
+$H_1: (\alpha\beta)_{ij} \neq 0$ 
+Criteria:  Reject $H_0$ when F-CRIT < F
+F = $\frac{MS[\beta\gamma]}{MS[E]} = \frac{0.062}{1.155} = 0.0537$
+F-CRIT = $F_{(0.95,2,36)} = 3.259446$
+Decision:  Fail to Reject $H_0$.  There is insufficient evidence to support the claim that there is an interaction effect between temperature and stirring with a significance level of 0.95. 
+
+####### Contract Estimation
+
+$H_0: \theta = 0$
+$H_1: \theta \neq 0$
+Criteria:  Reject $H_0$ when F-CRIT < F
 
 
 
