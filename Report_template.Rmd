@@ -31,7 +31,7 @@ The "Effervescent Experiment" was conducted by dissolving two different brands o
 
 ### Experimental Design
 
-For this study, we are presented with data from an 'Effervescent Experiment'. The data contains the dissolving times of two different brands of cold medicine tablets that were obtained under various conditions. Those conditions include varying water temperatures (6$^\circ$, 23$^\circ$, 40$^\circ$) and the presence of stirring (magnetic stir bar at 350 rpm). This was a complete block design with stirring acting as the blocking effect.  
+For this study, we are presented with data from an 'Effervescent Experiment'. The data contains the dissolving times of two different brands of cold medicine tablets that were obtained under various conditions. Those conditions include varying water temperatures (6$^\circ$, 23$^\circ$, 40$^\circ$) and the presence of stirring (magnetic stir bar at 350 rpm). This was a complete block design with stirring acting as the blocking effect.
 
 ## Exploratory Data Analysis
 
@@ -207,10 +207,10 @@ Where $\alpha$ is brand effect, $\beta$ is temperature effect, $\gamma$ is stir 
 
 Mixed Effects models:\
 $Model~4: Y_{ijk} = \mu + \alpha_i + B_j + (\alpha B)_{ij} + \epsilon_{ijk}$\
-Where brand is fixed and temperature is random.  
-$Model~5: Y_{ijk} = \mu + A_i + \beta_j  + (A \beta)_{ij} + \epsilon_{ijk}$\
+Where brand is fixed and temperature is random.\
+$Model~5: Y_{ijk} = \mu + A_i + \beta_j + (A \beta)_{ij} + \epsilon_{ijk}$\
 Where brand is random and temperature is fixed.\
-$Model~6: Y_{ijk} = \mu + A_i + B_j  + (AB)_{ij} + \epsilon_{ijk}$\
+$Model~6: Y_{ijk} = \mu + A_i + B_j + (AB)_{ij} + \epsilon_{ijk}$\
 Where both brand and temperature are random.\
 
 With order as a factor:\
@@ -296,14 +296,14 @@ model8 <- RMSE_function(aov_three_order_eff)
 ```
 
 | Model | Root MSE      | $R^2$         | $adj~R^2$     | AIC           | BIC           |
-|------------|------------|------------|------------|------------|------------|
+|-------|---------------|---------------|---------------|---------------|---------------|
 | 1     | `r model1[1]` | `r model1[2]` | `r model1[3]` | `r model1[4]` | `r model1[5]` |
 | 2     | `r model2[1]` | `r model2[2]` | `r model2[3]` | `r model2[4]` | `r model2[5]` |
 | 3     | `r model3[1]` | `r model3[2]` | `r model3[3]` | `r model3[4]` | `r model3[5]` |
 | 7     | `r model7[1]` | `r model7[2]` | `r model7[3]` | `r model7[4]` | `r model7[5]` |
 | 8     | `r model8[1]` | `r model8[2]` | `r model8[3]` | `r model8[4]` | `r model8[5]` |
 
-The mixed/random effects Models 4, 5, 6 all had Root MSE=1.833 (see Appendix 1, Table 13).  
+The mixed/random effects Models 4, 5, 6 all had Root MSE=1.833 (see Appendix 1, Table 13).
 
 ### Results
 
