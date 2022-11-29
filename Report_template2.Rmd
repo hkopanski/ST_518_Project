@@ -34,7 +34,14 @@ For this paper we have been presented with data gathered on the dissolving cold 
 
 ### Experimental Design  
 
-Data used for this study was obtained from an experiment called the ‘Effervescent Experiment’. The experiment was conducted on two different brands of cold medicine, ‘Name’ and ‘Store’. Each brand was dissolved in water at three different but evenly spaced temperatures, 6$^\circ$C, 23$^\circ$C, and 40$^\circ$C. Data was gathered on each combination of brand and temperature using 4 replications. The experiment was then repeated with the introduction of stirring as a blocking factor. Samples were stirred using a magnetic stirrer spinning at 350 rpm. The data was then tabulated and made available for this analysis. 
+The data collected consisted of name brand versus store brand cold medicine tablets that were dissolved at varying
+water temperatures (6$^\circ$, 23$^\circ$, 40$^\circ$). A complete block design was formulated using 2 blocks
+with 4 observations on each of the treatment combinations in each block. Block I was stirred with a magnetic
+stirring plate at 350 rpm while Block II was not stirred.
+
+Each tablet was dropped into 60 mL of water from a fixed height and dissolving time was measured from the time the
+tablet was dropped until it was completely dissolved. This process was completed by 4 different experimenters
+and the average time (t/4) was recorded as the observation.
 
 ## Exploratory Data Analysis
 
