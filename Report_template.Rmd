@@ -31,7 +31,14 @@ The "Effervescent Experiment" was conducted by dissolving two different brands o
 
 ### Experimental Design
 
-For this study, we are presented with data from an 'Effervescent Experiment'. The data contains the dissolving times of two different brands of cold medicine tablets that were obtained under various conditions. Those conditions include varying water temperatures (6$^\circ$, 23$^\circ$, 40$^\circ$) and the presence of stirring (magnetic stir bar at 350 rpm). This was a complete block design with stirring acting as the blocking effect.  
+The data collected consisted of name brand versus store brand cold medicine tablets that were dissolved at varying
+water temperatures (6$^\circ$, 23$^\circ$, 40$^\circ$). A complete block design was formulated using 2 blocks
+with 4 observations on each of the treatment combinations in each block. Block I was stirred with a magnetic
+stirring plate at 350 rpm while Block II was not stirred.
+
+Each tablet was dropped into 60 mL of water from a fixed height and dissolving time was measured from the time the
+tablet was dropped until it was completely dissolved. This process was completed by 4 different experimenters
+and the average time (t/4) was recorded as the observation.
 
 ## Exploratory Data Analysis
 
