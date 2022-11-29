@@ -402,8 +402,8 @@ F = $\frac{MS[\alpha\gamma]}{MS[E]} = \frac{20.510}{1.155} = 17.758$\
 F-CRIT = $F_{(0.95,1,36)} = 4.1132$\
 Decision:  $Reject H_0$.  There is sufficient evidence to support the claim that there is an interaction effect between brand type and stirring with a significance level of 0.95.\
 
-$H_0: (\alpha\gamma)_{ij} = 0$\
-$H_1: (\alpha\gamma)_{ij} \neq 0$\
+$H_0: (\beta\gamma)_{ij} = 0$\
+$H_1: (\beta\gamma)_{ij} \neq 0$\
 Criteria:  Reject $H_0$ when F-CRIT < F\
 F = $\frac{MS[\beta\gamma]}{MS[E]} = \frac{0.062}{1.155} = 0.0537$\
 F-CRIT = $F_{(0.95,2,36)} = 3.259446$\
