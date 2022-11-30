@@ -84,8 +84,8 @@ df_eff %>% group_by(Brand, Temp) %>% summarise('Mean' = mean(Time),
 
 var_table <- df_eff %>% group_by(Brand, Temp, Stirred) %>% summarise('Var' = var(Time))
 
-var_table$Group <- ifelse(var_table$Brand == 'name' & var_table$Stirred == 'yes', 'Stirred Brand',
-                          ifelse(var_table$Brand == 'name' & var_table$Stirred == 'no', 'Non Stirred Brand',
+var_table$Group <- ifelse(var_table$Brand == 'name' & var_table$Stirred == 'yes', 'Stirred Name',
+                          ifelse(var_table$Brand == 'name' & var_table$Stirred == 'no', 'Non Stirred Name',
                                  ifelse(var_table$Brand == 'store' & var_table$Stirred == 'yes', 'Stirred Store',
                                         ifelse(var_table$Brand == 'store' & var_table$Stirred == 'no', 'Non Stirred Store', NA))))
 
@@ -93,7 +93,7 @@ change_varplot <-
 ggplot(change_var) + geom_point(aes(x = Temp, y = Var, col = Brand)) +
                      geom_line(aes(x = Temp, y = Var, col = Brand, group = Brand)) + 
                      labs(title = "Change in Variance",
-                          subtitle = "Over Temperature",
+                          subtitle = "Over Temperature (Combined)",
                           x = '',
                           y = 'Variance') +
                      theme(legend.position = c(0.85, 0.75),
@@ -162,7 +162,7 @@ ggplot(var_table) + geom_point(aes(x = Temp, y = Var, col = Group)) +
     geom_line(aes(x = Temp, y = Var, col = Group, group = Group)) +
     geom_hline(yintercept = 2, lty = 'dashed') +
          labs(title = "Change in Variance",
-              subtitle = "Over Temperature (Combined)",
+              subtitle = "Over Temperature",
               x = '',
               y = '') +
          theme(legend.position = c(0.85, 0.8),
@@ -408,7 +408,7 @@ par(mfrow=c(2,2), mar = c(5,5,2,2))
 plot(lm_three_order_eff, pch = 4)
 ```
 
-Multiple diagnostic plots indicate observations 2, 3, and 8 could be outliers.  The residual versus fitted plot shows perhaps some slight increase in variance from left to right.  The QQ plot indicates the normality assumption is likely met although there are somewhat heavy tails due to outlier observations.  Overall the plots indicate the model assumptions have been met with the caveat that there are a few outliers in the data.  
+Multiple diagnostic plots indicate observations 2, 3, and 8 could be outliers.  The residual-to-fitted plot also shows that there may be an issue with mild heteroscedasticity.  The implication is that the criteria that residuals are drawn from a population of constant variance may not be met.  The residual versus fitted plot shows perhaps some slight increase in variance from left to right.  The QQ plot indicates the normality assumption is likely met although there are somewhat heavy tails due to outlier observations.  Overall the plots indicate the model assumptions have been met with the caveat that there are a few outliers in the data.  
 
 ### ANOVA Analysis
 
