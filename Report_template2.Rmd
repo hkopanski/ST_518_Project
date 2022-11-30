@@ -408,7 +408,7 @@ par(mfrow=c(2,2), mar = c(5,5,2,2))
 plot(lm_three_order_eff, pch = 4)
 ```
 
-Multiple diagnostic plots indicate observations 2, 3, and 8 could be outliers.  The residual-to-fitted plot also shows that there may be an issue with mild heteroscedasticity.  The implication is that the criteria that residuals are drawn from a population of constant variance may not be met.  The residual versus fitted plot shows perhaps some slight increase in variance from left to right.  The QQ plot indicates the normality assumption is likely met although there are somewhat heavy tails due to outlier observations.  Overall the plots indicate the model assumptions have been met with the caveat that there are a few outliers in the data.  
+Multiple diagnostic plots indicate observations 2, 3, and 8 could be outliers.  The residual-to-fitted plot also shows that there may be an issue with mild heteroscedasticity.  The implication is that the criteria that residuals are drawn from a population of constant variance may not be met.  The QQ plot indicates the normality assumption is likely met although there are somewhat heavy tails due to outlier observations.  Overall the plots indicate the model assumptions have been met with the caveat that there are a few outliers in the data.  
 
 ### ANOVA Analysis
 
@@ -416,14 +416,15 @@ Multiple diagnostic plots indicate observations 2, 3, and 8 could be outliers.  
 knitr::kable(summary(aov_eff)[[1]], 'simple', digits = 3, caption = 'Model 1: ANOVA Table')
 ```
 
-
-
 Our null and alternative hypotheses are:
 
-$H_0:$\
-$H_1:$\
+$H_0: \mu_1 = \mu_2 =...=\mu_i= 0$\
+$H_1:$ Not all means are equal to zero. \
+Criteria:  Reject $H_0$ when F-CRIT < F\
+F = $\frac{MS[Treatment]}{MS(E)} = \frac{1380.289}{1.155} = 1195.055$\
+F-CRIT = $F_{(0.95,2,36)} = 3.2594$\
+Decision:  Reject $H_0$.  There is sufficient evidence to support the claim that there is at least one mean that differs with a significance level of 0.95\
 
-We found that.....   
 
 ###### Test Interaction Effect
 
@@ -448,12 +449,18 @@ F = $\frac{MS[\beta\gamma]}{MS[E]} = \frac{0.062}{1.155} = 0.0537$\
 F-CRIT = $F_{(0.95,2,36)} = 3.259446$\
 Decision:  Fail to Reject $H_0$.  There is insufficient evidence to support the claim that there is an interaction effect between temperature and stirring with a significance level of 0.95.\
 
-####### Contract Estimation
 
-$H_0: \theta = 0$\
-$H_1: \theta \neq 0$\
-Criteria:  Reject $H_0$ when F-CRIT < F\
 
+
+####### Contrast Estimation
+
+\textcolor{red}{Goodness of Contrast Estimate}\}
+\textcolor{red}{$H_0: \theta = 0$}\
+\textcolor{red}{$H_1: \theta \neq 0$}\
+\textcolor{red}{Criteria:  Reject $H_0$ when T-Test}\
+\textcolor{red}{T-Test:  $\frac{(EST-NULL)}{\hat{SE}(\hat{\theta})} = \frac{\hat\theta-0}{\hat{SE}(\hat{\theta})}$}\
+\textcolor{red}{T-CRIT:  $t_{(N-t,\frac{\alpha}{2})}$}\
+\textcolor{red}{Decision:  }\
 
 
 ### Contrasts
