@@ -26,7 +26,7 @@ Text goes here.....
 \newpage
 
 ### Introduction 
-For this paper we have been presented with data gathered on the dissolving cold medicine in water. The dataset contains dissolving characteristics of different cold medicine brands done under various environmental conditions. The goal of this paper is to answer the following questions:  
+For this paper we have been presented with data gathered on the dissolving times of cold medicine in water. The dataset contains dissolving characteristics of different cold medicine brands done under various environmental conditions. The goal of this paper is to answer the following questions:  
 
 * Are the dissolving characteristics different between brands?
 * Does temperature of the water influence dissolving characteristics? If so, is there an interaction effect between brand and temperature?
@@ -49,7 +49,7 @@ and the average time (t/4) was recorded as the observation.
 
 In total, the provided dataset contains 48 rows and 5 columns. The 5 columns include 3 explanatory categorical variables (Brand, Temp in $^\circ$C, and Stirring), a single continuous response variable (Time, in minutes) and one descriptor (order). Prior to analysis, the data will be explored to gain a better understanding of what to expect and, more importantly, check for any potential violations of analytical assumptions.
 
-From the summary statistics table (see Appendix 1, Table 1), we can see that each group has exactly 4 entries, eliminating concerns with respect to design imbalance. Constructing a means table for the data without taking into account stirring, we can see that there does appear to be a disparity between the mean dissolving times of store brand cold medications when compared to name brand. 
+From the summary statistics table (see Appendix I, Table 5), we can see that each group has exactly 4 entries, eliminating concerns with respect to design imbalance. Constructing a means table for the data without taking into account stirring, we can see that there does appear to be a disparity between the mean dissolving times of store brand cold medications when compared to name brand. 
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE}
 df_stats <-
@@ -186,7 +186,7 @@ While combing over the summary table, the variability between factors caught our
 
 From the boxplots below, we can immediately see that stirring seems to increase the variance of the name-brand medicine--while also decreasing the mean differences of brand observations within each temperature grouping.  An interaction effect between temperature and brand can be deduced if lines are drawn through the centers of the boxes. Earlier, we had introduced an insight from the summary statistics output indicating an inverse relationship between temperature and dissolve time--as temperature increases dissolve time decreases.  The boxplot reinforces this idea.  We can also claim that temperature has an inverse effect on dissolving times whether stirring is present or not--indications of temperature having a strong effect on dissolving time by itself.  Stirring might have an additive effect regardless of temperature.
 
-It is simply conjectured at this point, however, we noticed that observations of dissolve time while stirring the water seems to have increased the name brand variability, while not stirring the water seems to have increased the store brand variability.  Perhaps worth looking into the blocking effects of stirred on variability at various temperatures. 
+It is simply conjecture at this point, however, we noticed that observations of dissolve time while stirring the water seems to have increased the name brand variability, while not stirring the water seems to have increased the store brand variability. Perhaps it is worth looking into the blocking effects of stirred on variability at various temperatures. 
 
 ```{r,  echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6.5, 2.5), dpi=300}
 df_eff %>% ggplot() + geom_boxplot(aes(fill = Brand, y = Time, x = Temp)) + 
@@ -195,7 +195,7 @@ df_eff %>% ggplot() + geom_boxplot(aes(fill = Brand, y = Time, x = Temp)) +
 )
 ```
 
-The possible interaction between brand and temperature becomes even more noticeable in the preceding three-factor interaction plots. Specifically, the brand and temperature interaction can be seen when the temperature increases. The slope for the store brand has a more pronounced negative slope than the slope of the name brand. In addition, there might be a slight three-factor interaction between brand, temperature, and stirring as the name and store brand lines appear to be closer together in the stirred=yes plot than the stirred=no plot.
+The possible interaction between brand and temperature becomes even more noticeable in the three-factor interaction plots below. Specifically, the brand and temperature interaction can be seen when the temperature increases. The slope for the store brand has a more pronounced negative slope than the slope of the name brand. In addition, there might be a slight three-factor interaction between brand, temperature, and stirring as the name and store brand lines appear to be closer together in the stirred=yes plot than the stirred=no plot.
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6.5,4), dpi=250}
 ##3 factor interaction plot based on HW7 code
@@ -254,7 +254,7 @@ title(xlab = 'Temperature', ylab = "Mean Dissolving Time", line = 2.25, cex.lab 
 
 ### Assumptions and Violations
 
-In reference to the boxplots, we were able to see a small number of outliers. To confirm if there is any concern we plotted the Cook's Distance for each point based on a full linear model. Point 8 has a higher Cook's distance than the rest of the points which may require removal for analysis if it is suspected of causing issues in the analysis. This would have to be weighed against the risks caused by introducing imbalances.
+In reference to the boxplots, we were able to see a small number of outliers. To confirm if there is any concern, we plotted the Cook's Distance for each point based on a full linear model. Point 8 has a higher Cook's distance than the rest of the points which may require removal for analysis if it is suspected of causing issues in the analysis. This would have to be weighed against the risks caused by introducing imbalances.
 
 ```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6.5,2.25), dpi=250}
 #model1
@@ -325,7 +325,7 @@ $Model~1: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} +
 $Model~2: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} + \epsilon_{ijkl}$\
 $Model~3: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + \epsilon_{ijkl}$
 
-Where $\alpha$ is brand effect, $\beta$ is temperature effect, $\gamma$ is stir effect. i, j, k are (1, 2), (1,2,3), and (1,2), respectively. $\epsilon_{ijkl}$ is assumed to be normally distributed with a $\mu_\epsilon$ of 0 and a variance of $\sigma^2_\epsilon$. $\mu$ is the overall mean and is an unknown value.
+Where $\alpha$ is brand effect, $\beta$ is temperature effect, $\gamma$ is stir effect. i, j, k are (1, 2), (1, 2, 3), and (1, 2), respectively. $\epsilon_{ijkl}$ is assumed to be normally distributed with a $\mu_\epsilon$ of 0 and a variance of $\sigma^2_\epsilon$. $\mu$ is the overall mean and is an unknown value.
 
 Mixed Effects models:\
 $Model~4: Y_{ijk} = \mu + \alpha_i + B_j + (\alpha B)_{ij} + \epsilon_{ijk}$\
@@ -352,7 +352,7 @@ gOrderTime + geom_point() +geom_smooth(method=lm,col="Red",se = F) +
   
 The preceding scatter plot shows only a weak positive linear relationship between Order and Time with a small correlation=0.2.  However, the plot does show a plausible quadratic relationship between Order and Time.  
 
-A fitted quadratic regression model of Time versus addditive quadratic Order was significant with overall overall F test p-value=0.013 and all coefficients having p-values less than .05 (Full Results in Appendix).  Thus, we decided to include both Order and $Order^2$ as additive covariates in Models 7 and 8.  
+A fitted quadratic regression model of Time versus additive quadratic Order was significant with overall overall F test p-value=0.013 and all coefficients having p-values less than .05 (Full Results in Appendix). Thus, we decided to include both Order and $Order^2$ as additive covariates in Models 7 and 8.  
   
 $Model~7: Y_{ijklm} = \mu + \alpha_i + \beta_j + \gamma_k + \nu_l +\nu_l^2  + (\alpha \beta)_{ij} + \epsilon_{ijklm}$\
 Similar to model 2, but with an introduced covariate effect, $\nu$, to represent order.
@@ -397,7 +397,7 @@ colnames(d) <- c('Root MSE', '$R^2$', 'adj $R^2$', 'AIC', 'BIC')
 knitr::kable(d, escape = FALSE, digits = 3, align = "ccccc")
 ```
 
-The mixed/random effects Models 4, 5, 6 all had Root MSE=1.833 (see Appendix 1, Table 13).  
+The mixed/random effects Models 4, 5, 6 all had Root MSE=1.833 (see Appendix I, Table 13).  
 
 Several criteria were used to select the final model including Root MSE(error standard deviation estimate), Adjusted $R^2$, AIC, and BIC.  Model 1 had the best outcome in all these criteria with Root MSE=1.075, Adjusted $R^2$=0.9770, AIC= 155.34, and BIC= 179.66.    
 
@@ -419,35 +419,35 @@ knitr::kable(summary(aov_eff)[[1]], 'simple', digits = 3, caption = 'Model 1: AN
 Our null and alternative hypotheses are:
 
 $H_0: \mu_1 = \mu_2 =...=\mu_i= 0$\
-$H_1:$ Not all means are equal to zero. \
+$H_a:$ Not all means are equal to zero. \
 Criteria:  Reject $H_0$ when F-CRIT < F\
 F = $\frac{MS[Treatment]}{MS(E)} = \frac{1380.289}{1.155} = 1195.055$\
 F-CRIT = $F_{(0.95,2,36)} = 3.2594$\
-Decision:  Reject $H_0$.  There is sufficient evidence to support the claim that there is at least one mean that differs with a significance level of 0.95\
+Decision:  Reject $H_0$.  There is sufficient evidence to support the claim that there is at least one mean that differs with a significance level of 0.05\
 
 
 ###### Test Interaction Effect
 
 $H_0: (\alpha\beta)_{ij} = 0$\
-$H_1: (\alpha\beta)_{ij} \neq 0$\
+$H_a: (\alpha\beta)_{ij} \neq 0$\
 Criteria:  Reject $H_0$ when F-CRIT < F\
 F = $\frac{MS[\alpha\beta]}{MS[E]} = \frac{115.926}{1.155} = 100.3688$\
 F-CRIT = $F_{(0.95,2,36)} = 3.2594$\
-Decision:  $Reject H_0$.  There is sufficient evidence to support the claim that there is an interaction effect between brand type and temperature with a significance level of 0.95.\
+Decision:  $Reject H_0$.  There is sufficient evidence to support the claim that there is an interaction effect between brand type and temperature with a significance level of 0.05.\
 
 $H_0: (\alpha\gamma)_{ik} = 0$\
-$H_1: (\alpha\gamma)_{ik} \neq 0$\
+$H_a: (\alpha\gamma)_{ik} \neq 0$\
 Criteria:  Reject $H_0$ when F-CRIT < F\
 F = $\frac{MS[\alpha\gamma]}{MS[E]} = \frac{20.510}{1.155} = 17.758$\
 F-CRIT = $F_{(0.95,1,36)} = 4.1132$\
-Decision:  $Reject H_0$.  There is sufficient evidence to support the claim that there is an interaction effect between brand type and stirring with a significance level of 0.95.\
+Decision:  $Reject H_0$.  There is sufficient evidence to support the claim that there is an interaction effect between brand type and stirring with a significance level of 0.05.\
 
 $H_0: (\beta\gamma)_{ij} = 0$\
-$H_1: (\beta\gamma)_{ij} \neq 0$\
+$H_a: (\beta\gamma)_{ij} \neq 0$\
 Criteria:  Reject $H_0$ when F-CRIT < F\
 F = $\frac{MS[\beta\gamma]}{MS[E]} = \frac{0.062}{1.155} = 0.0537$\
 F-CRIT = $F_{(0.95,2,36)} = 3.259446$\
-Decision:  Fail to Reject $H_0$.  There is insufficient evidence to support the claim that there is an interaction effect between temperature and stirring with a significance level of 0.95.\
+Decision:  Fail to Reject $H_0$.  There is insufficient evidence to support the claim that there is an interaction effect between temperature and stirring with a significance level of 0.05.\
 
 
 
@@ -494,7 +494,7 @@ contrast(means_eff, list(temp6_23 = c(1/4, 1/4, -1/4, -1/4, 0, 0, 1/4, 1/4, -1/4
          )
 ```
 
-Conducting a linear contrast analysis on each of the explanatory variables reveals that there are significant differences between groups based on factors, see Appendix 1 Table 2, 3, 4, and 5 for full results.
+Conducting a linear contrast analysis on each of the explanatory variables reveals that there are significant differences between groups based on factors, see Appendix I Tables 2, 3, 4, and 5 for full results.
 
 In the first case, we contrasted the means of stirred versus not stirred. Here the difference in means is -2.41 with an upper 95% confidence limit of -3.04 and a lower 95% CI limit of -1.78. In other words, on average stirring medicine reduces dissolving time by between 3.04 and 1.78 minutes regardless of brand or temperature. When looking only at brand, name brand dissolving times were on average between 4.71 and 5.97 (95% CI) minutes slower than store brand. Since neither of the intervals contained zero we can conclude that there is a difference between brands and between the presence of stirring.
 
@@ -553,7 +553,7 @@ re_table$Estimate <- as.numeric(re_table$Estimate)
 re_table$Portion <- round(as.numeric(re_table$Estimate) / sum(as.numeric(re_table$Estimate)),3)
 ```
 
-Expanding Table 20 from Appendix 1 to include portion of variance due to effect, the following table is produced:
+Expanding Table 20 from Appendix I to include portion of variance due to effect, the following table is produced:
 
 ```{r,  echo = FALSE, message = FALSE, error = FALSE}
 knitr::kable(re_table)
@@ -562,20 +562,20 @@ knitr::kable(re_table)
 The results from the ANOVA analysis are based on the following:
 
 For brand:  
-$H_o:$ $\sigma_{\alpha}^2$ is equal to zero  
+$H_0:$ $\sigma_{\alpha}^2$ is equal to zero  
 $H_a:$ $\sigma_{\alpha}^2$ is not equal to zero 
 
 For temperature:  
-$H_o:$ $\sigma_{\beta}^2$ is equal to zero  
+$H_0:$ $\sigma_{\beta}^2$ is equal to zero  
 $H_a:$ $\sigma_{\beta}^2$ is not equal to zero
 
 For interaction:  
-$H_o:$ $\sigma_{\alpha \beta}^2$ is equal to zero  
+$H_0:$ $\sigma_{\alpha \beta}^2$ is equal to zero  
 $H_a:$ $\sigma_{\alpha \beta}^2$ is not equal to zero
 
-The calculated critical f score is `r qf(0.95, 2, 2)` using an $\alpha$ of 0.05 and (2, 2) degrees of freedom. The f score for brand and for temperature were below the critical f score. Brand produced an f score of 2.95 and Temperature produced a score of 7.14. In both cases, the null hypothesis was not rejected, therefore,  $\sigma_{\alpha}^2$ =  $\sigma_{\beta}^2$ = 0. On the other hand, the critical value for the interaction variance is is `r qf(0.95, 2, 42)` using an $\alpha$ of 0.05 and (2, 42) degrees of freedom. At a value of 34.5, we are able to reject the null hypothesis in favor of the alternative. The variance associated with the interaction effect is significant.
+The calculated critical F-score is `r qf(0.95, 2, 2)` using an $\alpha$ of 0.05 and (2, 2) degrees of freedom. The F-scores for Brand and Temperature (2.95 and 7.14, respectively) were both below the critical F-score. In both cases, the null hypothesis was not rejected, therefore,  $\sigma_{\alpha}^2$ =  $\sigma_{\beta}^2$ = 0. On the other hand, the critical value for the interaction variance is `r qf(0.95, 2, 42)` using an $\alpha$ of 0.05 and (2, 42) degrees of freedom. With an F-statistic of 34.5, we are able to reject the null hypothesis in favor of the alternative. The variance associated with the interaction effect is significant.
 
-Further analysis determines, temperature is responsible for the largest portion of total variance. $\sigma_\beta^2$, at value of 44.465, explains 62.3% of the total variance ($\hat{\sigma}_{total}^2$ being 71.32).
+Further analysis determines temperature is responsible for the largest portion of total variance. $\sigma_\beta^2$, at value of 44.465, explains 62.3% of the total variance ($\hat{\sigma}_{total}^2$ being 71.32).
 
 The overall dissolving meantime, $\hat{Y}_{...}$, was found to be `r round(mean(df_eff$Time), 3)`. The standard error of that value, $SE(\mu)$ was calculated to be `r se_mu`. From that we find the 95% confidence limit is $\pm$ `r pt(0.975, dof_app)*se_mu`.  
 
