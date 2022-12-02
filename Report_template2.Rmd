@@ -14,11 +14,12 @@ library(lmerTest)
 library(olsrr)
 library(car)
 library(cowplot)
+library(lmtest)
 df_eff <- read_csv('effervescence.csv', col_types = 'fffnnn')
 ```
-
+\pagenumbering{gobble}
 \newpage
-
+\pagenumbering{arabic}
 ## Executive Summary
 
 Text goes here.....
@@ -35,7 +36,7 @@ For this paper we have been presented with data gathered on the dissolving times
 ### Experimental Design  
 
 The data collected consisted of name brand versus store brand cold medicine tablets that were dissolved at varying
-water temperatures (6$^\circ$, 23$^\circ$, 40$^\circ$). A complete block design was formulated using 2 blocks
+water temperatures (6$^\circ$ C, 23$^\circ$ C, 40$^\circ$ C). A complete block design was formulated using 2 blocks
 with 4 observations on each of the treatment combinations in each block. Block I was stirred with a magnetic
 stirring plate at 350 rpm while Block II was not stirred.
 
@@ -47,7 +48,7 @@ and the average time (t/4) was recorded as the observation.
 
 ### Summary
 
-In total, the provided dataset contains 48 rows and 5 columns. The 5 columns include 3 explanatory categorical variables (Brand, Temp in $^\circ$C, and Stirring), a single continuous response variable (Time, in minutes) and one descriptor (order). Prior to analysis, the data will be explored to gain a better understanding of what to expect and, more importantly, check for any potential violations of analytical assumptions.
+In total, the provided dataset contains 48 rows and 5 columns. The 5 columns include 3 explanatory categorical variables (Brand, Temp in $^\circ$C, and Stirring), a single continuous response variable (Time, in seconds) and one descriptor (order). Prior to analysis, the data will be explored to gain a better understanding of what to expect and, more importantly, check for any potential violations of analytical assumptions.
 
 From the summary statistics table (see Appendix I, Table 5), we can see that each group has exactly 4 entries, eliminating concerns with respect to design imbalance. Constructing a means table for the data without taking into account stirring, we can see that there does appear to be a disparity between the mean dissolving times of store brand cold medications when compared to name brand. 
 
@@ -72,7 +73,7 @@ knitr::kable(means_table, digits = 2, col.names = c("Temp", "Name", "Store", "Te
              caption = "Means Table")
 ```
 
-When inspecting the marginal means of store versus name brand, we find that store brand dissolves in less time, on average, than the name brand. This disparity becomes more pronounced as the effect of temperature is introduced. It was observed that increasing temperature has a more dramatic effect on store brand medicine than name brand. Dissolving time for store brand medicine drops from 78.42 to 59.04 ($\Delta$ of -19.38) seconds across a temperature change from 6$^\circ$C to 40$^\circ$C. Whereas, name brand medicine only drops from 77.60 to 68.20 ($\Delta$ of -9.40 seconds) across the same temperature change.
+When inspecting the marginal means of store versus name brand, we find that store brand dissolves in less time, on average, than the name brand. This disparity becomes more pronounced as the effect of temperature is introduced. It was observed that increasing temperature has a more dramatic effect on store brand medicine than name brand. Dissolving time for store brand medicine drops from 78.42 to 59.04 ($\Delta$ of -19.38 seconds) across a temperature change from 6$^\circ$C to 40$^\circ$C. Whereas, name brand medicine only drops from 77.60 to 68.20 ($\Delta$ of -9.40 seconds) across the same temperature change.
 
 ```{r,  echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6.5, 2.1), dpi=300}
 change_var <-
@@ -254,9 +255,9 @@ title(xlab = 'Temperature', ylab = "Mean Dissolving Time", line = 2.25, cex.lab 
 
 ### Assumptions and Violations
 
-In reference to the boxplots, we were able to see a small number of outliers. To confirm if there is any concern, we plotted the Cook's Distance for each point based on a full linear model. Point 8 has a higher Cook's distance than the rest of the points which may require removal for analysis if it is suspected of causing issues in the analysis. This would have to be weighed against the risks caused by introducing imbalances.
+The Time versus Order scatter shows no obvious grouping, whether by brand or blocking factor. Density plots do reveal multiple peaks in the data indicating the presence of multiple populations. These could be based on temperature, or some unaccounted for lurking variable. 
 
-```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6.5,2.25), dpi=250}
+```{r, echo=FALSE, message=FALSE, error=FALSE, fig.dim=c(6.5,4.25), dpi=250}
 #model1
 aov_eff <- aov(lm_eff <- lm(Time ~ Brand * Temp * Stirred, data = df_eff))
 
@@ -275,6 +276,22 @@ CD_plot <- ggplot() +
       axis.title = element_text(size = 8)
 )
 
+scttr_plot <-
+ggplot(df_eff) + geom_point(aes(x = Order, y = Time, col = Brand, pch = Stirred)) +
+ labs(title = "Time versus Order",
+              x = 'Order',
+              y = 'Time (seconds)') +
+         theme(#legend.position = c(0.9, 0.15),
+               plot.title = element_text(size = 8, face = "bold"),
+               plot.subtitle = element_text(size = 7, face = "bold"),
+               axis.text = element_text(size = 7),
+               axis.title = element_text(size = 8),
+               legend.text = element_text(size=5, face="bold"),
+               legend.title = element_text(size=6, face="bold"),
+               legend.key.size = unit(0.4, 'cm'),
+               legend.key = element_rect( fill = alpha("white", 0.5)),
+               legend.background = element_rect(fill = alpha("white", 0.5)))
+
 #CD_plot <- ols_plot_cooksd_chart(lm_eff)
 qqplot1 <- ggplot(df_eff, aes(sample = Time)) + 
   stat_qq(shape = 20) + 
@@ -288,7 +305,38 @@ qqplot1 <- ggplot(df_eff, aes(sample = Time)) +
       axis.title = element_text(size = 8)
 )
 
-plot_grid(CD_plot, qqplot1)
+d_plot1 <-
+ggplot(df_eff) + geom_density(aes(Time, fill = Brand), adjust = 1) + xlim(c(40, 100)) +
+ labs(title = "Brand Density Plots",
+              x = '',
+              y = '') +
+         theme(legend.position = c(0.85, 0.8),
+               plot.title = element_text(size = 8, face = "bold"),
+               plot.subtitle = element_text(size = 7, face = "bold"),
+               axis.text = element_text(size = 7),
+               axis.title = element_text(size = 8),
+               legend.text = element_text(size=5, face="bold"),
+               legend.title = element_text(size=6, face="bold"),
+               legend.key.size = unit(0.4, 'cm'),
+               legend.key = element_rect(colour = "transparent", fill = alpha("white", 0)),
+               legend.background = element_rect(fill = alpha("white", 0)))
+d_plot2 <- 
+ggplot(df_eff) + geom_density(aes(Time, fill = Stirred), adjust = 1) + xlim(c(40, 100)) +
+ labs(title = "Stirred Block Density Plots",
+              x = '',
+              y = '') +
+         theme(legend.position = c(0.85, 0.8),
+               plot.title = element_text(size = 8, face = "bold"),
+               plot.subtitle = element_text(size = 7, face = "bold"),
+               axis.text = element_text(size = 7),
+               axis.title = element_text(size = 8),
+               legend.text = element_text(size=5, face="bold"),
+               legend.title = element_text(size=6, face="bold"),
+               legend.key.size = unit(0.4, 'cm'),
+               legend.key = element_rect(colour = "transparent", fill = alpha("white", 0)),
+               legend.background = element_rect(fill = alpha("white", 0)))
+
+plot_grid(scttr_plot, qqplot1, d_plot1, d_plot2, nrow = 2, ncol = 2)
 ```
 
 Finally, we check the normality of the data. Here a Q-Q plot is generated for the full model residuals. The data appears to suffer from heavy tails, multimodality and/or gaps in data between the left tail and the center. Since downstream analysis hinges on the assumption that our data is normally distributed, these issues may pose a problem.
@@ -321,13 +369,13 @@ aov_three_order_eff <- aov(lm_three_order_eff <- lm(Time ~ Brand * Temp * Stirre
 
 The following models were developed and analyzed for this paper:
 
+Fixed Effects Models:  
+
 $Model~1: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} + (\alpha \gamma)_{ik} + (\gamma \beta)_{jk} + (\alpha \beta \gamma)_{ijk} + \epsilon_{ijkl}$\
 $Model~2: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} + \epsilon_{ijkl}$\
 $Model~3: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + \epsilon_{ijkl}$
 
-Where $\alpha$ is brand effect, $\beta$ is temperature effect, $\gamma$ is stir effect. i, j, k are (1, 2), (1, 2, 3), and (1, 2), respectively. $\epsilon_{ijkl}$ is assumed to be normally distributed with a $\mu_\epsilon$ of 0 and a variance of $\sigma^2_\epsilon$. $\mu$ is the overall mean and is an unknown value.
-
-Mixed Effects models:\
+Mixed Effects models:    
 $Model~4: Y_{ijk} = \mu + \alpha_i + B_j + (\alpha B)_{ij} + \epsilon_{ijk}$\
 Where brand is fixed and temperature is random.  
 $Model~5: Y_{ijk} = \mu + A_i + \beta_j  + (A \beta)_{ij} + \epsilon_{ijk}$\
@@ -335,19 +383,35 @@ Where brand is random and temperature is fixed.\
 $Model~6: Y_{ijk} = \mu + A_i + B_j  + (AB)_{ij} + \epsilon_{ijk}$\
 Where both brand and temperature are random.\
 
+Where $\alpha$ is brand effect, $\beta$ is temperature effect, $\gamma$ is stir effect. i, j, k are (1, 2), (1, 2, 3), and (1, 2), respectively. $\epsilon_{ijkl}$ is assumed to be normally distributed with a $\mu_\epsilon$ of 0 and a variance of $\sigma^2_\epsilon$. $\mu$ is the overall mean and is an unknown value.
+
 With Order as a Model covariate:\
 We developed Models 7 and 8 to account for run order variable Order as a covariate.  We first considered the linear relationship between only Order and the response Time.  
-```{r Time and Order Plot, echo=FALSE, fig.dim=c(4,4), message=FALSE, warning=FALSE, dpi=250}
+```{r Time and Order Plot, echo=FALSE, fig.dim=c(4, 2.5), fig.align='center',message=FALSE, warning=FALSE, dpi=250}
 ##get correlation to add to plot
 correlation <- cor(df_eff$Time,df_eff$Order)
 
 ##construct scatter plot of Time by Order with fitted SLR line
 ## add correlation result to this plot
 gOrderTime <- ggplot(df_eff,aes(x=Order,y=Time))
-gOrderTime + geom_point() +geom_smooth(method=lm,col="Red",se = F) + 
-  geom_text(x=35,y=63,size=6, label = paste0("Correlation = ",round(correlation, 2))) + 
-  labs(title = "Scatter Plot of Time by Order with Fitted \nLinear=Red and Quadratic=Blue Regression Lines") +  
-  geom_smooth(method=lm,formula = y~poly(x,2),col="Blue",se=F)
+gOrderTime + 
+    geom_point(pch = 20) + geom_smooth(method = lm, col = "Red", se = F, size = 0.5) + 
+    geom_text(x = 35, y = 63, size = 4, label = paste0("Correlation = ",round(correlation, 2))) +  
+    geom_smooth(method = lm, formula = y~poly(x,2), col="Blue", se = F, size = 0.5) + 
+    
+    labs(title = "Scatter Plot of Time by Order with Fitted \nLinear=Red and Quadratic=Blue Regression Lines",
+             x = 'Order',
+             y = 'Time in Seconds') +
+    theme(legend.position = c(0.85, 0.8),
+          plot.title = element_text(size = 8, face = "bold"),
+          plot.subtitle = element_text(size = 7, face = "bold"),
+          axis.text = element_text(size = 7),
+          axis.title = element_text(size = 8),
+          legend.text = element_text(size=5, face="bold"),
+          legend.title = element_text(size=6, face="bold"),
+          legend.key.size = unit(0.4, 'cm'),
+          legend.key = element_rect(colour = "transparent", fill = alpha("white", 0)),
+          legend.background = element_rect(fill = alpha("white", 0)))
 ```
   
 The preceding scatter plot shows only a weak positive linear relationship between Order and Time with a small correlation=0.2.  However, the plot does show a plausible quadratic relationship between Order and Time.  
@@ -408,7 +472,15 @@ par(mfrow=c(2,2), mar = c(5,5,2,2))
 plot(lm_three_order_eff, pch = 4)
 ```
 
-Multiple diagnostic plots indicate observations 2, 3, and 8 could be outliers.  The residual-to-fitted plot also shows that there may be an issue with mild heteroscedasticity.  The implication is that the criteria that residuals are drawn from a population of constant variance may not be met.  The QQ plot indicates the normality assumption is likely met although there are somewhat heavy tails due to outlier observations.  Overall the plots indicate the model assumptions have been met with the caveat that there are a few outliers in the data.  
+Multiple diagnostic plots indicate observations 2, 3, and 8 could be outliers. Evidence for outliers was seen in the EDA boxplots. Plotting the Cook's Distance for each point based on our model. We have chosen not to remove any outliers from the data because the calculated Cook's distance is below 0.5 and because we do not want to introduce imbalances in the analysis. 
+
+```{r,  echo = FALSE, message = FALSE, error = FALSE, fig.align='center',fig.dim=c(5, 2), dpi=300}
+CD_plot
+```
+
+The residual-to-fitted plot also shows that there may be an issue with mild heteroscedasticity.  The implication is that the criteria that residuals are drawn from a population of constant variance may not be met.  The QQ plot indicates the normality assumption is likely met although there are somewhat heavy tails due to outlier observations.
+
+Overall the plots indicate the model assumptions have been met with the caveat that there are a few outliers in the data.
 
 ### ANOVA Analysis
 
@@ -416,52 +488,51 @@ Multiple diagnostic plots indicate observations 2, 3, and 8 could be outliers.  
 knitr::kable(summary(aov_eff)[[1]], 'simple', digits = 3, caption = 'Model 1: ANOVA Table')
 ```
 
-Our null and alternative hypotheses are:
+#### Hypothesis Testing\
 
+The following our hypothesis testing based on the results of the Model 1 ANOVA table. All rejection criteria is based on rejecting $H_0$ when $F_{crit}$ < $F_{score}$:  
+
+**Total model ANOVA (summation of all treatment sum of squares):**
 $H_0: \mu_1 = \mu_2 =...=\mu_i= 0$\
-$H_a:$ Not all means are equal to zero. \
-Criteria:  Reject $H_0$ when F-CRIT < F\
-F = $\frac{MS[Treatment]}{MS(E)} = \frac{1380.289}{1.155} = 1195.055$\
-F-CRIT = $F_{(0.95,2,36)} = 3.2594$\
-Decision:  Reject $H_0$.  There is sufficient evidence to support the claim that there is at least one mean that differs with a significance level of 0.05\
+$H_a:$ Not all means are equal to zero.\
+$F_{score}$ = $\frac{MS[Treatment]}{MS(E)} = \frac{211.65}{1.155} = 183.21$\
+Degrees of freedom = 11 and 36\
+$F_{crit}$ = 2.06\
+Decision:  Reject $H_0$.  There is sufficient evidence to support the claim that there is at least one mean that differs with a significance level of $\alpha$ = 0.05\
 
-
-###### Test Interaction Effect
+**Interaction Effects**
 
 $H_0: (\alpha\beta)_{ij} = 0$\
 $H_a: (\alpha\beta)_{ij} \neq 0$\
-Criteria:  Reject $H_0$ when F-CRIT < F\
-F = $\frac{MS[\alpha\beta]}{MS[E]} = \frac{115.926}{1.155} = 100.3688$\
-F-CRIT = $F_{(0.95,2,36)} = 3.2594$\
-Decision:  $Reject H_0$.  There is sufficient evidence to support the claim that there is an interaction effect between brand type and temperature with a significance level of 0.05.\
+$F_{score}$ = 100.3688\
+Degrees of freedom = 2 and 36\
+$F_{crit}$ = 3.2594\
+Decision:  $Reject H_0$.  There is sufficient evidence to support the claim that there is an interaction effect between brand type and temperature with a significance level of $\alpha$ = 0.05.\
 
 $H_0: (\alpha\gamma)_{ik} = 0$\
 $H_a: (\alpha\gamma)_{ik} \neq 0$\
-Criteria:  Reject $H_0$ when F-CRIT < F\
-F = $\frac{MS[\alpha\gamma]}{MS[E]} = \frac{20.510}{1.155} = 17.758$\
-F-CRIT = $F_{(0.95,1,36)} = 4.1132$\
-Decision:  $Reject H_0$.  There is sufficient evidence to support the claim that there is an interaction effect between brand type and stirring with a significance level of 0.05.\
+$F_{score}$ = 17.758\
+Degrees of freedom = 1 and 36\
+$F_{crit}$ = 4.1132\
+Decision:  $Reject H_0$.  There is sufficient evidence to support the claim that there is an interaction effect between brand type and stirring with a significance level of $\alpha$ = 0.05.\
 
 $H_0: (\beta\gamma)_{ij} = 0$\
 $H_a: (\beta\gamma)_{ij} \neq 0$\
-Criteria:  Reject $H_0$ when F-CRIT < F\
-F = $\frac{MS[\beta\gamma]}{MS[E]} = \frac{0.062}{1.155} = 0.0537$\
-F-CRIT = $F_{(0.95,2,36)} = 3.259446$\
-Decision:  Fail to Reject $H_0$.  There is insufficient evidence to support the claim that there is an interaction effect between temperature and stirring with a significance level of 0.05.\
+$F_{score}$ = 0.0537\
+Degrees of freedom = 2 and 36\
+$F_{crit}$ = 3.259446\
+Decision:  Fail to Reject $H_0$.  There is insufficient evidence to support the claim that there is an interaction effect between temperature and stirring with a significance level of $\alpha$ = 0.05.\
 
-We saw that three factor interaction exists from earlier interaction plots.  Hypothesis tests were used to determine which interactions were plausible.  As a result, we determined that there is likely an interaction between brand and temperature and brand and stirring.  We also found that there was a difference in the means within treatments. 
+$H_0: (\alpha\beta\gamma)_{ijk} = 0$\
+$H_a: (\alpha\beta\gamma)_{ijk} \neq 0$\
+$F_{score}$ = 3.919\
+Degrees of freedom = 2 and 36\
+$F_{crit}$ = 3.259446\
+Decision:  Fail to Reject $H_0$.  There is insufficient evidence to support the claim that there is an interaction effect between brand, temperature, and stirring with a significance level of $\alpha$ = 0.05.\
 
+We saw that three factor interaction exists from earlier interaction plots.  Hypothesis tests were used to determine which interactions were plausible.  As a result, we determined that there is likely an interaction between brand and temperature and brand and stirring.  We also found that there was a difference in the means within treatments.  
 
-####### Contrast Estimation
-
-\textcolor{red}{Goodness of Contrast Estimate}\}
-\textcolor{red}{$H_0: \theta = 0$}\
-\textcolor{red}{$H_1: \theta \neq 0$}\
-\textcolor{red}{Criteria:  Reject $H_0$ when T-Test}\
-\textcolor{red}{T-Test:  $\frac{(EST-NULL)}{\hat{SE}(\hat{\theta})} = \frac{\hat\theta-0}{\hat{SE}(\hat{\theta})}$}\
-\textcolor{red}{T-CRIT:  $t_{(N-t,\frac{\alpha}{2})}$}\
-\textcolor{red}{Decision:  }\
-
+With regards to Table 15, type III sums of squares show that temperature explains the most amount of variance. Temperature adds 221.58 sum of squares given all the other variables in the model. The next highest contributor to variance is the interaction effect between brand and temperature, which adds 80.11 given all the other variables in the model. Brand adds little variance add a value 2.6 to the sum of squares given the other variables. The next lowest are both interaction effects involving stirring. The interaction effect for stirring & temperature and stirring & brand only add 3.67 and 0.4 to variance respectively. They are also not significant since thier respective p values are below 0.05.  
 
 ### Contrasts
 
@@ -663,15 +734,15 @@ knitr::kable(cbind(c('Brand', 'Temp' , 'Brand*Temp', 'Residual'),
 
 ```{r model7, echo =  FALSE, message=FALSE, error=FALSE, fig.dim=c(7,4), dpi=300}
 ##get correlation to add to plot
-correlation <- cor(df_eff$Time,df_eff$Order)
+#correlation <- cor(df_eff$Time,df_eff$Order)
 
 ##construct scatter plot of Time by Order with fitted SLR line
 ## add correlation result to this plot
-gOrderTime <- ggplot(df_eff,aes(x=Order,y=Time))
-gOrderTime + geom_point() +geom_smooth(method=lm,col="Red",se = F) + 
-  geom_text(x=35,y=63,size=6, label = paste0("Correlation = ",round(correlation, 2))) + 
-  labs(title = "Scatter Plot of Time by Order with Fitted \nLinear=Red and Quadratic=Blue Regression Lines") +  
-  geom_smooth(method=lm,formula = y~poly(x,2),col="Blue",se=F)
+#gOrderTime <- ggplot(df_eff,aes(x=Order,y=Time))
+#gOrderTime + geom_point() +geom_smooth(method=lm,col="Red",se = F) + 
+#  geom_text(x=35,y=63,size=6, label = paste0("Correlation = ",round(correlation, 2))) + 
+#  labs(title = "Scatter Plot of Time by Order with Fitted \nLinear=Red and Quadratic=Blue Regression Lines") +  
+#  geom_smooth(method=lm,formula = y~poly(x,2),col="Blue",se=F)
 
 
 ##Create new Order^2 variable
@@ -679,7 +750,7 @@ df_eff$Order2<-df_eff$Order^2
 
 #Fit quadratic model with order and order^2
 slrOrderQ<-lm(Time~Order+ Order2,data = df_eff)
-summary(slrOrderQ)
+#summary(slrOrderQ)
 
 knitr::kable(summary(aov_block_order_eff)[[1]], 
              'simple', caption = "Model 7: ANOVA Table")
