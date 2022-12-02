@@ -449,7 +449,7 @@ F = $\frac{MS[\beta\gamma]}{MS[E]} = \frac{0.062}{1.155} = 0.0537$\
 F-CRIT = $F_{(0.95,2,36)} = 3.259446$\
 Decision:  Fail to Reject $H_0$.  There is insufficient evidence to support the claim that there is an interaction effect between temperature and stirring with a significance level of 0.05.\
 
-
+We saw that three factor interaction exists from earlier interaction plots.  Hypothesis tests were used to determine which interactions were plausible.  As a result, we determined that there is likely an interaction between brand and temperature and brand and stirring.  We also found that there was a difference in the means within treatments. 
 
 
 ####### Contrast Estimation
