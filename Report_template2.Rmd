@@ -645,7 +645,14 @@ Looking only at stirring, dissolving time was reduced for stirred medicine by be
 We found a significant three factor interaction (p-value= 0.029) between stirring, brand, and temperature confirming earlier insights from three factor interaction plots.  A highly significant two factor interaction (p-value=0.0002) exists between stirring and brand.  
 Rather than treating stirring as a blocking variable, we suggest treating stirring as a third interacting factor as we did in our final model.  
 
-Need to Add Questions for Future Research?
+Finally, we pose some questions and possible routes for future research.  
+
+Would different name and store brands have similar dissolving times?  
+Our final model assumed all fixed effects meaning we assumed particular name and store brands were used in this study.  A future study could incorporate additional specific name and store brands to examine whether additional types of name and store brands would have similar dissolving times.
+
+What question are the researchers wanting to answer with the chosen temperature range?  
+This experiment included a wide range of temperatures(6$^\circ$C, 23$^\circ$C, 40$^\circ$C).  6$^\circ$C is below  and 40$^\circ$C is above typical room temperature.  Are the researchers trying to include possible outdoor usage of the medicines?  Answers to these questions could lead to different ranges of chosen temperatures for a future study.   
+
 
 \newpage
 
