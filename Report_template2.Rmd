@@ -22,7 +22,23 @@ df_eff <- read_csv('effervescence.csv', col_types = 'fffnnn')
 \pagenumbering{arabic}
 ## Executive Summary
 
-Text goes here.....
+We were tasked with analyzing experimental data for dissolving times of brand name versus store brand cold medicine at
+different water temperatures and stirring factors. We will explore the results to determine if differences do exist
+between brand name and store brand medicine; if so, are they the result of temperature differences, stirring factors,
+or both? 
+
+The data was collected by dropping the medicine tablets into 60 mL of water of varying temperature (6$^\circ$, 23$^\circ$, 40$^\circ$) from a fixed height and recording the time it took the tablet to completely dissolve from the time it was dropped. The stirring factor was used as a blocking method; Block I was stirred while Block II was not. Four different individuals performed the experiment and recorded their results; the average of these results were recorded
+as the observations.  
+
+A summary statistics table shows there is, indeed, a difference in mean dissolve time between name brand and store brand. A means table shows name brand has a mean of 73.443 with variance of 21.131, while store brand has a mean of 68.104 and variance of 67.032. Our findings also showed that stirring appears to increase variability in name brand while decreasing variability in store brand. Additionally, plots of the data show a meaningful interaction between brand and temperature, which becomes more prominent at higher temperatures.
+
+8 models were fit in total: 3 for fixed effects, 3 for mixed effects, and 2 for adding the `order` variable as a covariate. Model 1, which we have referred to as "the full model", includes a three-way interaction between brand, temp, and stirred and produced the lowest Root Mean Square Error (RMSE) of 1.075. Model 8, which used the full model but added `order` as covariate measure, produced a RMSE of 1.083 (the 2nd lowest RMSE). We chose the best model by using the common fit criteria RMSE, Adjusted R^2^, AIC, and BIC. For RMSE, AIC, and BIC, lower values are better, while a higher value of Adjusted R^2^ is preferred as it explains the percentage of variation explained by the model. Model 1 produced the best results across all four model selection criteria with RMSE of 1.075, Adjusted R^2^ of 0.977, AIC of 155.337, and BIC of 179.663. Model 1's assumptions of normality and constant variance are generally met, despite having slightly heavy tails and mild heteroscedasticity. The Cook's Distance plot shows observations 2, 3, and 8 potentially being problematic outliers, but because the values were all under 0.5, we chose to leave them in the analysis to avoid creating imbalances.
+
+An Analysis of Variance (ANOVA) was conducted for the full model to check differences and run several hypothesis tests. A significant result is declared when the F critical value (F-crit) is less than the calculated F-score. The results showed that there is at least one difference in means (F-crit = 2.06, F-score = 183.21) and there are significant interactions between brand and temperature (F-crit = 3.2594, F-score = 100.3688), brand and stirring (F-crit = 4.1132, F-score = 17.758), and brand, temperature, and stirring (F-crit = 3.2594, F-score = 3.919). The same analysis also showed that there is not sufficient evidence to claim meaningful interactions between temperature and stirring (F-crit = 3.2594, F-score = 0.0537).  
+
+A number of contrast analyses were conducted to see how much the significant means differed from one another. Our findings showed that, on average, stirring medicine reduces dissolving time by 1.78 to 3.04 seconds, name brand medicine dissolves between 4.71 and 5.97 seconds slower than store brand, and stirring reduces name brand dissolving time by 2.83 to 4.61 seconds compared to 0.22 to 2 seconds for store brand. Pairwise analyses were conducted for the three levels of temperature using Bonferroni correction which showed significant differences for each of the pairs. The 95% confidence limits were (6.25, 8.38), (13.32, 15.44), and (6.00, 8.13) for the pair wise comparisons of $6^\circ C~vs~23^\circ C$, $6^\circ C~vs~40^\circ C$, and $23^\circ C~vs~40^\circ C$, respectively. When comparing each temperature to the remainder of the group, $23^\circ C$ was not significantly different.  
+
+To recap, we have determined that, on average, name brand dissolving times are between 4.71 and 5.97 seconds slower than store brands, water temperature has an inverse relationship with dissolving times, there is a highly significant interaction between brand and temperature, and stirring reduces dissolving time by 1.78 and 3.04 seconds. Stirring was found to have a highly significant interaction with brand (p=0.0002) and a significant interaction with both brand and temperature (p=0.029); because these interactions are so significant, we suggest using stirring as a main effect rather than a blocking variable.
 
 \newpage
 
@@ -492,7 +508,7 @@ knitr::kable(summary(aov_eff)[[1]], 'simple', digits = 3, caption = 'Model 1: AN
 
 The following our hypothesis testing based on the results of the Model 1 ANOVA table. All rejection criteria is based on rejecting $H_0$ when $F_{crit}$ < $F_{score}$:  
 
-**Total model ANOVA (summation of all treatment sum of squares):**
+**Total model ANOVA (summation of all treatment mean squares):**
 $H_0: \mu_1 = \mu_2 =...=\mu_i= 0$\
 $H_a:$ Not all means are equal to zero.\
 $F_{score}$ = $\frac{MS[Treatment]}{MS(E)} = \frac{211.65}{1.155} = 183.21$\
@@ -528,11 +544,11 @@ $H_a: (\alpha\beta\gamma)_{ijk} \neq 0$\
 $F_{score}$ = 3.919\
 Degrees of freedom = 2 and 36\
 $F_{crit}$ = 3.259446\
-Decision:  Fail to Reject $H_0$.  There is insufficient evidence to support the claim that there is an interaction effect between brand, temperature, and stirring with a significance level of $\alpha$ = 0.05.\
+Decision:  Reject $H_0$.  There is sufficient evidence to support the claim that there is an interaction effect between brand, temperature, and stirring with a significance level of $\alpha$ = 0.05.\
 
 We saw that three factor interaction exists from earlier interaction plots.  Hypothesis tests were used to determine which interactions were plausible.  As a result, we determined that there is likely an interaction between brand and temperature and brand and stirring.  We also found that there was a difference in the means within treatments.  
 
-With regards to Table 15, type III sums of squares show that temperature explains the most amount of variance. Temperature adds 221.58 sum of squares given all the other variables in the model. The next highest contributor to variance is the interaction effect between brand and temperature, which adds 80.11 given all the other variables in the model. Brand adds little variance add a value 2.6 to the sum of squares given the other variables. The next lowest are both interaction effects involving stirring. The interaction effect for stirring & temperature and stirring & brand only add 3.67 and 0.4 to variance respectively. They are also not significant since thier respective p values are below 0.05.  
+With regards to Table 15, type III sums of squares show that temperature explains the most amount of variance. Temperature adds 221.58 sum of squares given all the other variables in the model. The next highest contributor to variance is the interaction effect between brand and temperature, which adds 80.11 given all the other variables in the model. Brand adds little variance add a value 2.6 to the sum of squares given the other variables. The next lowest are both interaction effects involving stirring. The interaction effect for stirring & temperature and stirring & brand only add 3.67 and 0.4 to variance respectively. They are also not significant since their respective p-values are above 0.05.  
 
 ### Contrasts
 
@@ -567,11 +583,11 @@ contrast(means_eff, list(temp6_23 = c(1/4, 1/4, -1/4, -1/4, 0, 0, 1/4, 1/4, -1/4
 
 Conducting a linear contrast analysis on each of the explanatory variables reveals that there are significant differences between groups based on factors, see Appendix I Tables 2, 3, 4, and 5 for full results.
 
-In the first case, we contrasted the means of stirred versus not stirred. Here the difference in means is -2.41 with an upper 95% confidence limit of -3.04 and a lower 95% CI limit of -1.78. In other words, on average stirring medicine reduces dissolving time by between 3.04 and 1.78 minutes regardless of brand or temperature. When looking only at brand, name brand dissolving times were on average between 4.71 and 5.97 (95% CI) minutes slower than store brand. Since neither of the intervals contained zero we can conclude that there is a difference between brands and between the presence of stirring.
+In the first case, we contrasted the means of stirred versus not stirred. Here the difference in means is -2.41 with an upper 95% confidence limit of -3.04 and a lower 95% CI limit of -1.78. In other words, on average stirring medicine reduces dissolving time by between 1.78 and 3.04 seconds regardless of brand or temperature. When looking only at brand, name brand dissolving times were on average between 4.71 and 5.97 (95% CI) seconds slower than store brand. Since neither of the intervals contained zero we can conclude that there is a difference between brands and between the presence of stirring.
 
-While significant for both store and name brands, stirring had more of an impact to dissolving times for name brand than it did for the store brand. Stirring reduced name brand dissolving times by 2.83 and 4.61 minutes whereas for the store brand that interval was 0.22 and 2 minutes.
+While significant for both store and name brands, stirring had more of an impact on dissolving times for name brand than it did for the store brand. Stirring reduced name brand dissolving times by 2.83 and 4.61 seconds whereas for the store brand that interval was 0.22 and 2 seconds.
 
-A similar analysis was completed for the three levels of temperature. Completing a contrast analysis using a Bonferroni correction we found that in pairwise cases each level was significantly different from the other. The 95% confidence limits were (6.25, 8.38), (13.32, 15.44), and (6.00, 8.13) for the pair wise comparisons of $6^\circ C~vs~23^\circ C$, $6^\circ C~vs~40^\circ C$, and $23^\circ C~vs~40^\circ C$, respectively. Zero did not fall in any of those ranges. When comparing individual levels versus the remainder of the group, $23^\circ C$ was found not to be significantly different from the rest of the levels. That confidence interval ranged from -1.04 to 0.80 minutes of dissolving time. Due to that, we do not have enough evidence to say $23^\circ C$ is different from either $6^\circ C$ or $40^\circ C$.  
+A similar analysis was completed for the three levels of temperature. Completing a contrast analysis using a Bonferroni correction we found that in pairwise cases each level was significantly different from the other. The 95% confidence limits were (6.25, 8.38), (13.32, 15.44), and (6.00, 8.13) for the pair wise comparisons of $6^\circ C~vs~23^\circ C$, $6^\circ C~vs~40^\circ C$, and $23^\circ C~vs~40^\circ C$, respectively. Zero did not fall in any of those ranges. When comparing individual levels versus the remainder of the group, $23^\circ C$ was found not to be significantly different from the rest of the levels. That confidence interval ranged from -1.04 to 0.80 seconds of dissolving time. Due to that, we do not have enough evidence to say $23^\circ C$ is different from either $6^\circ C$ or $40^\circ C$.  
 
 ```{r,  echo = FALSE, message = FALSE, error = FALSE, warning=FALSE}
 lm_eff_me <- lm(Time ~ Brand * Temp, data = df_eff)
@@ -633,15 +649,15 @@ Where $\alpha$ is brand effect, $\beta$ is temperature effect, $\gamma$ is stir 
 Next we address the primary research questions.   
 
 * Are the dissolving characteristics different between brands?  
-When looking only at brand, name brand dissolving times were on average between 4.71 and 5.97 (95% CI) minutes slower than store brand.  
+When looking only at brand, name brand dissolving times were on average between 4.71 and 5.97 (95% CI) seconds slower than store brand.  
 
 * Does temperature of the water influence dissolving characteristics? If so, is there an interaction effect between brand and temperature?  
 When looking only at temperature, the general trend was a decrease in dissolving times as temperature increased.  Comparing specific temperatures, we found a significant difference between dissolving mean times for the lowest and highest temperatures $6^\circ C$ and $40^\circ C$.  
 We found a highly significant two factor interaction (p-value<.0001) between brand and temperature.  Stirring reduced name brand dissolving times by 2.83 and 4.61
-minutes whereas for the store brand that interval was 0.22 and 2 minutes.
+seconds whereas for the store brand that interval was 0.22 and 2 seconds.
 
 * Does stirring influence dissolving times and is there an interaction with the other two effects?  What is the proper role for stirring?  
-Looking only at stirring, dissolving time was reduced for stirred medicine by between 3.04 and 1.78 minutes(95% CI).  
+Looking only at stirring, dissolving time was reduced for stirred medicine by between 3.04 and 1.78 seconds (95% CI).  
 We found a significant three factor interaction (p-value= 0.029) between stirring, brand, and temperature confirming earlier insights from three factor interaction plots.  A highly significant two factor interaction (p-value=0.0002) exists between stirring and brand.  
 Rather than treating stirring as a blocking variable, we suggest treating stirring as a third interacting factor as we did in our final model.  
 
