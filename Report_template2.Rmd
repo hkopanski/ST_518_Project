@@ -64,7 +64,7 @@ and the average time (t/4) was recorded as the observation.
 
 ### Summary
 
-In total, the provided dataset contains 48 rows and 5 columns. The 5 columns include 3 explanatory categorical variables (Brand, Temp in $^\circ$C, and Stirring), a single continuous response variable (Time, in seconds) and one descriptor (order). Prior to analysis, the data will be explored to gain a better understanding of what to expect and, more importantly, check for any potential violations of analytical assumptions.
+In total, the provided dataset contains 48 rows and 5 columns. The 5 columns include 3 explanatory categorical variables (Brand, Temp in $^\circ$C, and Stirring), a single continuous response variable (Time, in seconds) and one descriptor (order). Prior to analysis, the data will be explored to gain a better understanding of what to expect and, more importantly, check for any potential violations of analytic assumptions.
 
 From the summary statistics table (see Appendix I, Table 4), we can see that each group has exactly 4 entries, eliminating concerns with respect to design imbalance. Constructing a means table for the data without taking into account stirring, we can see that there does appear to be a disparity between the mean dissolving times of store brand cold medications when compared to name brand. 
 
