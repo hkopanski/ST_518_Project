@@ -508,7 +508,7 @@ knitr::kable(summary(aov_eff)[[1]], 'simple', digits = 3, caption = 'Model 1: AN
 
 The following our hypothesis testing based on the results of the Model 1 ANOVA table. All rejection criteria is based on rejecting $H_0$ when $F_{crit}$ < $F_{score}$:  
 
-**Total model ANOVA (summation of all treatment mean squares):**
+**Total model ANOVA (summation of all treatment mean squares):**  
 $H_0: \mu_1 = \mu_2 =...=\mu_i= 0$\
 $H_a:$ Not all means are equal to zero.\
 $F_{score}$ = $\frac{MS[Treatment]}{MS(E)} = \frac{211.65}{1.155} = 183.21$\
@@ -694,6 +694,30 @@ knitr::kable(summary(aov_eff)[[1]], 'simple', digits = 3, caption = 'Model 1: AN
 knitr::kable(Anova(aov_eff, type=3), 'simple', digits = 3, caption = 'Model 1: Type III ANOVA Table') # type 3 SS
 par(mfrow=c(2,2), mar = c(5,5,2,2))
 plot(aov_eff, pch = 4)
+```
+
+\newpage
+
+**SAS Overall ANOVA Model Table**
+
+|Source|DF|Sum of Squares|Mean Square|F Value|Pr>F|
+|---|---|---|---|---|---|
+|Model|11|2328.174357|211.652214|183.21|<.0001|
+|Error|36|41.589732|1.155270|||
+|CorrectedTotal|47|2369.764090|||
+
+Produced from the following code:
+
+```
+proc import datafile = "/home/u39732161/data/effervescence.csv" 
+     out = proj_data
+     dbms = csv replace;
+run;
+
+proc anova data = proj_data;
+	class Brand Temp Stirred;
+	model Time = Brand|Temp|Stirred;
+run;
 ```
 
 \newpage
