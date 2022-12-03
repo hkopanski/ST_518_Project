@@ -432,7 +432,7 @@ gOrderTime +
   
 The preceding scatter plot shows only a weak positive linear relationship between Order and Time with a small correlation=0.2.  However, the plot does show a plausible quadratic relationship between Order and Time.  
 
-A fitted quadratic regression model of Time versus additive quadratic Order was significant with overall overall F test p-value=0.013 and all coefficients having p-values less than .05 (See Appendix I on pp. 18-19). Thus, we decided to include both Order and $Order^2$ as additive covariates in Models 7 and 8.  
+A fitted quadratic regression model of Time versus additive quadratic Order was significant with overall F test p-value=0.013 and all coefficients having p-values less than .05 (See Appendix I on pp. 19-20). Thus, we decided to include both Order and $Order^2$ as additive covariates in Models 7 and 8.  
   
 $Model~7: Y_{ijklm} = \mu + \alpha_i + \beta_j + \gamma_k + \nu_l +\nu_l^2  + (\alpha \beta)_{ij} + \epsilon_{ijklm}$\
 Similar to model 2, but with an introduced covariate effect, $\nu$, to represent order.
@@ -706,7 +706,38 @@ plot(aov_eff, pch = 4)
 |Error|36|41.589732|1.155270|||
 |CorrectedTotal|47|2369.764090|||
 
-Produced from the following code:
+
+**All Random Model with Brand & Temp as Random Factors**
+
+|Source|DF|Sum of Squares|Mean Square|F Value|Pr>F|
+|---|---|---|---|---|---|
+|temp|2|1654.736551|827.368276|7.14|0.1229|
+|brand|1|342.007154|342.007154|2.95|0.2280|
+|brand*temp|2|231.851912|115.925956|34.49|<.0001|
+|Error|42|141.168471|3.361154|||
+|CorrectedTotal|47|2369.764090|||
+
+**Mixed Model with Brand as Random and Temp as Fixed Factors**
+
+|Source|DF|Sum of Squares|Mean Square|F Value|Pr>F|
+|---|---|---|---|---|---|
+|temp|2|1654.736551|827.368276|7.14|0.1229|
+|brand|1|342.007154|342.007154|2.95|0.2280|
+|brand*temp|2|231.851912|115.925956|34.49|<.0001|
+|Error|42|141.168471|3.361154|||
+|CorrectedTotal|47|2369.764090|||
+
+**Mixed Model with Brand as Fixed and Temp as Random Factors**
+
+|Source|DF|Sum of Squares|Mean Square|F Value|Pr>F|
+|---|---|---|---|---|---|
+|temp|2|1654.736551|827.368276|7.14|0.1229|
+|brand|1|342.007154|342.007154|2.95|0.2280|
+|brand*temp|2|231.851912|115.925956|34.49|<.0001|
+|Error|42|141.168471|3.361154|||
+|CorrectedTotal|47|2369.764090|||
+
+Produced from the following code:  
 
 ```
 proc import datafile = "/home/u39732161/data/effervescence.csv" 
@@ -718,7 +749,35 @@ proc anova data = proj_data;
 	class Brand Temp Stirred;
 	model Time = Brand|Temp|Stirred;
 run;
+
+/* Fit an All Random Model with both Brand and Temp as random factors
+*/
+title 'ALL Random Model with both Brand and Temp as random factors';
+proc mixed data=proj_data method=type3 plots=residualpanel;
+  class  brand temp;
+  model time= / solution;
+  random temp brand brand*temp;
+run;
+
+/* Fit a Mixed Model with Brand as random and Temp as fixed factors
+*/
+title 'Mixed Model with Brand as random and Temp as fixed factors';
+proc mixed data=proj_data method=type3 plots=residualpanel;
+  class  brand temp;
+  model time=temp / solution;
+  random brand brand*temp;
+run;
+
+/* Fit a Mixed Model with Brand as fixed and Temp as random factors
+*/
+title 'Mixed Model with Brand as fixed and Temp as random factors';
+proc mixed data=proj_data method=type3 plots=residualpanel;
+  class  brand temp;
+  model time=brand / solution;
+  random temp brand*temp;
+run;
 ```
+
 
 \newpage
 
