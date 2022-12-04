@@ -1,6 +1,6 @@
 ---
 title: "ST_518 Project"
-author: "MA, HK, BA, JF"
+author: "Mark Austin, Halid Kopanski, Brock Akermen, Justin Feathers"
 date: "`r Sys.Date()`"
 output: 
   pdf_document
