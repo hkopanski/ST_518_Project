@@ -27,12 +27,12 @@ different water temperatures and stirring factors. We explored the results to de
 between brand name and store brand medicine; if so, were they the result of temperature differences, stirring factors,
 or both? 
 
-The data was collected by dropping the medicine tablets into 60 mL of water of varying temperature (6$^\circ$, 23$^\circ$, 40$^\circ$) from a fixed height and recording the time it took the tablet to completely dissolve from the time it was dropped. The stirring factor was used as a blocking method; Block I was stirred while Block II was not. Four different individuals performed the experiment and recorded their results; the average of these results were recorded
+The data was collected by dropping the medicine tablets into 60 mL of water of varying temperature (6$^\circ$C, 23$^\circ$C, 40$^\circ$C) from a fixed height and recording the time it took the tablet to completely dissolve from the time it was dropped. The stirring factor was used as a blocking method; Block I was stirred while Block II was not. Four different individuals performed the experiment and recorded their results; the average of these results were recorded
 as the observations.  
 
-A summary statistics table shows there was, indeed, a difference in mean dissolve time between name brand and store brand. A means table showed name brand has a mean of 73.443 with variance of 21.131, while store brand had a mean of 68.104 and variance of 67.032. Our findings also showed that stirring appears to increase variability in name brand while decreasing variability in store brand. Additionally, plots of the data showed a meaningful interaction between brand and temperature, which became more prominent at higher temperatures.
+The initial analysis showed there was evidence indicating a difference in mean dissolve time between name brand and store brand. A means table showed name brand has a mean of 73.443 with variance of 21.131, while store brand had a mean of 68.104 and variance of 67.032. There was evidence that showed stirring appeared to increase variability in name brand while decreasing variability in store brand. Additionally, plots of the data showed a meaningful interaction between brand and temperature, which became more prominent at higher temperatures.
 
-Eight models were fit in total: 3 for fixed effects, 3 for mixed effects, and 2 for adding the `order` variable as a covariate. Model 1, which we had referred to as "the full model", included a three-way interaction between brand, temp, and stirred and produced the lowest Root Mean Square Error (RMSE) of 1.075. Model 8, which used the full model but added `order` as covariate measure, produced a RMSE of 1.083 (the 2nd lowest RMSE). We chose the best model by using the common fit criteria RMSE, Adjusted R^2^, AIC, and BIC. For RMSE, AIC, and BIC, lower values are better, while a higher value of Adjusted R^2^ is preferred as it explains the percentage of variation explained by the model. Model 1 produced the best results across all four model selection criteria with RMSE of 1.075, Adjusted R^2^ of 0.977, AIC of 155.337, and BIC of 179.663. Model 1's assumptions of normality and constant variance were generally met, despite having slightly heavy tails and mild heteroscedasticity. The Cook's Distance plot showed observations 2, 3, and 8 potentially being problematic outliers, but because the values were all under 0.5, we chose to leave them in the analysis to avoid creating imbalances.
+Eight models were fit in total: 3 for fixed effects, 3 for mixed effects, and 2 for adding the `order` variable as a covariate. Model 1, referred to as "the full model", included a three-way interaction between brand, temp, and stirred and produced the lowest Root Mean Square Error (RMSE) of 1.075. Model 8, which used the full model but added `order` as covariate measure, produced a RMSE of 1.083 (the 2nd lowest RMSE). We chose the best model by using the common fit criteria RMSE, Adjusted R^2^, AIC, and BIC. For RMSE, AIC, and BIC, lower values are better, while a higher value of Adjusted R^2^ is preferred as it explains the percentage of variation explained by the model. Model 1 produced the best results across all four model selection criteria with RMSE of 1.075, Adjusted R^2^ of 0.977, AIC of 155.337, and BIC of 179.663. Model 1's assumptions of normality and constant variance were generally met, despite having slightly heavy tails and mild heteroscedasticity. The Cook's Distance plot showed observations 2, 3, and 8 potentially being problematic outliers, but because the values were all under 0.5, we chose to leave them in the analysis to avoid creating imbalances.
 
 An Analysis of Variance (ANOVA) was conducted for the full model to check differences and run several hypothesis tests. A significant result is declared when the F critical value (F-crit) is less than the calculated F-score. The results showed that there is at least one difference in means (F-crit = 2.06, F-score = 183.21) and there were significant interactions between brand and temperature (F-crit = 3.2594, F-score = 100.3688), brand and stirring (F-crit = 4.1132, F-score = 17.758), and brand, temperature, and stirring (F-crit = 3.2594, F-score = 3.919). The same analysis also showed that there is not sufficient evidence to claim meaningful interactions between temperature and stirring (F-crit = 3.2594, F-score = 0.0537).  
 
@@ -355,7 +355,7 @@ ggplot(df_eff) + geom_density(aes(Time, fill = Stirred), adjust = 1) + xlim(c(40
 plot_grid(scttr_plot, qqplot1, d_plot1, d_plot2, nrow = 2, ncol = 2)
 ```
 
-Finally, we check the normality of the data. Here a Q-Q plot is generated for the full model residuals. The data appears to suffer from heavy tails, multimodality and/or gaps in data between the left tail and the center. Since downstream analysis hinges on the assumption that our data is normally distributed, these issues may pose a problem.
+Finally, we check the normality of the data. Here a Q-Q plot is generated for raw time data. The data appears to suffer from heavy tails, multimodality and/or gaps in data between the left tail and the center. Since downstream analysis hinges on the assumption that our data is normally distributed, these issues may pose a problem.
 
 ## Analysis and Results
 
@@ -399,7 +399,7 @@ Where brand is random and temperature is fixed.\
 $Model~6: Y_{ijk} = \mu + A_i + B_j  + (AB)_{ij} + \epsilon_{ijk}$\
 Where both brand and temperature are random.\
 
-Where $\alpha$ is brand effect, $\beta$ is temperature effect, $\gamma$ is stir effect. i, j, k are (1, 2), (1, 2, 3), and (1, 2), respectively. $\epsilon_{ijkl}$ is assumed to be normally distributed with a $\mu_\epsilon$ of 0 and a variance of $\sigma^2_\epsilon$. $\mu$ is the overall mean and is an unknown value.
+Where $\alpha$ is brand effect, $\beta$ is temperature effect, $\gamma$ is stir effect. i, j, k are (1 = Name, 2 = Store), (1 = 6$^\circ$ C, 2 = 23$^\circ$ C, 3 = 40$^\circ$ C), and (1 = Stirred, 2 = Not Stirred), respectively. $\epsilon_{ijkl}$ is assumed to be normally distributed with a $\mu_\epsilon$ of 0 and a variance of $\sigma^2_\epsilon$. $\mu$ is the overall mean and is an unknown value.
 
 With Order as a Model covariate:\
 We developed Models 7 and 8 to account for run order variable Order as a covariate.  We first considered the linear relationship between only Order and the response Time.  
@@ -432,7 +432,7 @@ gOrderTime +
   
 The preceding scatter plot shows only a weak positive linear relationship between Order and Time with a small correlation=0.2.  However, the plot does show a plausible quadratic relationship between Order and Time.  
 
-A fitted quadratic regression model of Time versus additive quadratic Order was significant with overall F test p-value=0.013 and all coefficients having p-values less than .05 (See Appendix I on pp. 18-19). Thus, we decided to include both Order and $Order^2$ as additive covariates in Models 7 and 8.  
+A fitted quadratic regression model of Time versus additive quadratic Order was significant with overall F test p-value=0.013 and all coefficients having p-values less than .05 (See Appendix I Tables 32 and 33). Thus, we decided to include both Order and $Order^2$ as additive covariates in Models 7 and 8.  
   
 $Model~7: Y_{ijklm} = \mu + \alpha_i + \beta_j + \gamma_k + \nu_l +\nu_l^2  + (\alpha \beta)_{ij} + \epsilon_{ijklm}$\
 Similar to model 2, but with an introduced covariate effect, $\nu$, to represent order.
@@ -488,7 +488,7 @@ par(mfrow=c(2,2), mar = c(5,5,2,2))
 plot(lm_three_order_eff, pch = 4)
 ```
 
-Multiple diagnostic plots indicate observations 2, 3, and 8 could be outliers. Evidence for outliers was seen in the EDA boxplots. Plotting the Cook's Distance for each point based on our model. We have chosen not to remove any outliers from the data because the calculated Cook's distance is below 0.5 and because we do not want to introduce imbalances in the analysis. 
+Multiple diagnostic plots indicate observations 2, 3, and 8 could be outliers. Evidence for outliers was seen in the EDA boxplots. Plotting the Cook's Distance for each point based on our model. We have chosen not to remove any outliers from the data because the calculated Cook's distance is below 0.5 (>1 is generally considered to be large) and because we do not want to introduce imbalances in the analysis. The risks associated with imbalanced data outweighed the risk of the outliers affecting the model. 
 
 ```{r,  echo = FALSE, message = FALSE, error = FALSE, fig.align='center',fig.dim=c(5, 2), dpi=300}
 CD_plot
@@ -514,7 +514,7 @@ $H_a:$ Not all means are equal to zero.\
 $F_{score}$ = $\frac{MS[Treatment]}{MS(E)} = \frac{211.65}{1.155} = 183.21$\
 Degrees of freedom = 11 and 36\
 $F_{crit}$ = 2.06\
-Decision:  Reject $H_0$.  There is sufficient evidence to support the claim that there is at least one mean that differs with a significance level of $\alpha$ = 0.05\
+Decision:  Reject $H_0$.  There is sufficient evidence to support the claim that there is at least one mean that differs with a significance level of $\alpha$ = 0.05. Specific differences in the data will be analyzed in the Contrasts section.\
 
 **Interaction Effects**
 
@@ -546,9 +546,9 @@ Degrees of freedom = 2 and 36\
 $F_{crit}$ = 3.259446\
 Decision:  Reject $H_0$.  There is sufficient evidence to support the claim that there is an interaction effect between brand, temperature, and stirring with a significance level of $\alpha$ = 0.05.\
 
-We saw that three factor interaction exists from earlier interaction plots.  Hypothesis tests were used to determine which interactions were plausible.  As a result, we determined that there is likely an interaction between brand and temperature and brand and stirring.  We also found that there was a difference in the means within treatments.  
+We saw that three factor interaction exists from earlier interaction plots.  Hypothesis tests were used to determine which interactions were significant.  As a result, we determined that there is evidence for an interaction between brand and temperature and brand and stirring.  We also found that there was a difference in the means within treatments.  
 
-With regards to Table 15, type III sums of squares show that temperature explains the most amount of variance. Temperature adds 221.58 sum of squares given all the other variables in the model. The next highest contributor to variance is the interaction effect between brand and temperature, which adds 80.11 given all the other variables in the model. Brand adds little variance add a value 2.6 to the sum of squares given the other variables. The next lowest are both interaction effects involving stirring. The interaction effect for stirring & temperature and stirring & brand only add 3.67 and 0.4 to variance respectively. They are also not significant since their respective p-values are above 0.05.  
+With regards to Appendix I: Table 15, type III sums of squares show that temperature explains the most amount of variance. Temperature adds 221.58 sum of squares given all the other variables in the model. The next highest contributor to variance is the interaction effect between brand and temperature, which adds 80.11 given all the other variables in the model. Brand adds only adds 2.6 to the sum of squares given the other variables. The next lowest are both interaction effects involving stirring. The interaction effect for stirring & temperature and stirring & brand only add 3.67 and 0.4 to variance respectively. They are also not significant since their respective p-values are greater than 0.05.  
 
 ### Contrasts
 
@@ -574,20 +574,20 @@ cont_temp <-
 contrast(means_eff, list(temp6_23 = c(1/4, 1/4, -1/4, -1/4, 0, 0, 1/4, 1/4, -1/4, -1/4, 0, 0),
                          temp6_40 = c(1/4, 1/4, 0, 0, -1/4, -1/4, 1/4, 1/4, 0, 0, -1/4, -1/4),
                          temp23_40 = c(0, 0, 1/4, 1/4, -1/4, -1/4, 0, 0, 1/4, 1/4, -1/4, -1/4),
-                         temp6_rest = c(1/4, 1/4, -1/8, -1/8, -1/8, -1/8, 1/4, 1/4, -1/8, -1/8, -1/8, -1/8),
-                         temp23_rest = c(-1/8, -1/8, 1/4, 1/4, -1/8, -1/8, -1/8, -1/8, 1/4, 1/4, -1/8, -1/8),
-                         temp40_rest = c(-1/8, -1/8, -1/8, -1/8, 1/4, 1/4, -1/8, -1/8, -1/8, -1/8, 1/4, 1/4)
+                         temp6_others = c(1/4, 1/4, -1/8, -1/8, -1/8, -1/8, 1/4, 1/4, -1/8, -1/8, -1/8, -1/8),
+                         temp23_others = c(-1/8, -1/8, 1/4, 1/4, -1/8, -1/8, -1/8, -1/8, 1/4, 1/4, -1/8, -1/8),
+                         temp40_others = c(-1/8, -1/8, -1/8, -1/8, 1/4, 1/4, -1/8, -1/8, -1/8, -1/8, 1/4, 1/4)
                          ), options=list(adjust="bonferroni")
          )
 ```
 
-Conducting a linear contrast analysis on each of the explanatory variables reveals that there are significant differences between groups based on factors (see Appendix I, p. 12)
+Conducting a linear contrast analysis on each of the explanatory variables reveals that there are significant differences between groups based on factors.
 
-In the first case, we contrasted the means of stirred versus not stirred. Here the difference in means is -2.41 with an upper 95% confidence limit of -3.04 and a lower 95% CI limit of -1.78. In other words, on average stirring medicine reduces dissolving time by between 1.78 and 3.04 seconds regardless of brand or temperature. When looking only at brand, name brand dissolving times were on average between 4.71 and 5.97 (95% CI) seconds slower than store brand. Since neither of the intervals contained zero we can conclude that there is a difference between brands and between the presence of stirring.
+In the first case (see Appendix I: Table 11), we contrasted the means of stirred versus not stirred. Here the difference in means is -2.41 with an upper 95% confidence limit of -3.04 and a lower 95% CI limit of -1.78. In other words, on average stirring medicine reduces dissolving time by between 1.78 and 3.04 seconds regardless of brand or temperature. When looking only at brand, name brand dissolving times were on average between 4.71 and 5.97 (95% CI) seconds slower than store brand. Since neither of the intervals contained zero we can conclude that there is a difference between brands and between the presence of stirring.
 
-While significant for both store and name brands, stirring had more of an impact on dissolving times for name brand than it did for the store brand. Stirring reduced name brand dissolving times by 2.83 and 4.61 seconds whereas for the store brand that interval was 0.22 and 2 seconds.
+While significant for both store and name brands, stirring had more of an impact on dissolving times for name brand than it did for the store brand. Stirring reduced name brand dissolving times by 2.83 and 4.61 seconds whereas for the store brand that interval was 0.22 and 2 seconds (see Appendix I: Table 12).
 
-A similar analysis was completed for the three levels of temperature. Completing a contrast analysis using a Bonferroni correction we found that in pairwise cases each level was significantly different from the other. The 95% confidence limits were (6.25, 8.38), (13.32, 15.44), and (6.00, 8.13) for the pair wise comparisons of $6^\circ C~vs~23^\circ C$, $6^\circ C~vs~40^\circ C$, and $23^\circ C~vs~40^\circ C$, respectively. Zero did not fall in any of those ranges. When comparing individual levels versus the remainder of the group, $23^\circ C$ was found not to be significantly different from the rest of the levels. That confidence interval ranged from -1.04 to 0.80 seconds of dissolving time. Due to that, we do not have enough evidence to say $23^\circ C$ is different from either $6^\circ C$ or $40^\circ C$.  
+A similar analysis was completed for the three levels of temperature (see Appendix I: Table 13). Completing a contrast analysis using a Bonferroni correction we found that in pairwise cases each level was significantly different from the other. The 95% confidence limits were (6.25, 8.38), (13.32, 15.44), and (6.00, 8.13) for the pair wise comparisons of $6^\circ C~vs~23^\circ C$, $6^\circ C~vs~40^\circ C$, and $23^\circ C~vs~40^\circ C$, respectively. Zero did not fall in any of those ranges. When comparing individual levels versus the remainder of the group, $23^\circ C$ was found not to be significantly different from the rest of the levels. That confidence interval ranged from -1.04 to 0.80 seconds of dissolving time. Due to that, we do not have enough evidence to say $23^\circ C$ is different from either $6^\circ C$ or $40^\circ C$.  
 
 ```{r,  echo = FALSE, message = FALSE, error = FALSE, warning=FALSE}
 lm_eff_me <- lm(Time ~ Brand * Temp, data = df_eff)
@@ -644,7 +644,7 @@ Based on lowest RMSE criteria and adequate diagnostic assumption checks we chose
   
 $Model~1: Y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha \beta)_{ij} + (\alpha \gamma)_{ik} + (\gamma \beta)_{jk} + (\alpha \beta \gamma)_{ijk} + \epsilon_{ijkl}$\
 
-Where $\alpha$ is brand effect, $\beta$ is temperature effect, $\gamma$ is stir effect. i, j, k are (1, 2), (1,2,3), and (1,2), respectively. $\epsilon_{ijkl}$ is assumed to be normally distributed with a $\mu_\epsilon$ of 0 and a variance of $\sigma^2_\epsilon$. $\mu$ is the overall mean and is an unknown value.
+Where $\alpha$ is brand effect, $\beta$ is temperature effect, $\gamma$ is stir effect. i, j, k are (1 = Name, 2 = Store), (1 = 6$^\circ$ C, 2 = 23$^\circ$ C, 3 = 40$^\circ$ C), and (1 = Stirred, 2 = Not Stirred), respectively. $\epsilon_{ijkl}$ is assumed to be normally distributed with a $\mu_\epsilon$ of 0 and a variance of $\sigma^2_\epsilon$. $\mu$ is the overall mean and is an unknown value.
 
 Next we address the primary research questions.   
 
@@ -676,14 +676,14 @@ This experiment included a wide range of temperatures(6$^\circ$C, 23$^\circ$C, 4
 
 ```{r, echo =  FALSE, message=FALSE, error=FALSE, fig.dim=c(6,3.5), dpi=300}
 knitr::kable(df_stats, caption = "Data Summary Table")
-df_eff %>% group_by(Brand) %>% summarise('Mean' = mean(Time), 'Var' = var(Time),'Max' = max(Time), 'Min' = min(Time), 'Spread' = Max - Min) %>% knitr::kable()
-df_eff %>% group_by(Temp) %>% summarise('Mean' = mean(Time), 'Var' = var(Time), 'Max' = max(Time), 'Min' = min(Time), 'Spread' = Max - Min) %>% knitr::kable()
-df_eff %>% group_by(Brand, Temp) %>% summarise('Mean' = mean(Time), 'Var' = var(Time), 'Max' = max(Time), 'Min' = min(Time), 'Spread' = Max - Min) %>% knitr::kable()
-df_eff %>% group_by(Brand, Stirred) %>% summarise('Mean' = mean(Time), 'Var' = var(Time), 'Max' = max(Time), 'Min' = min(Time), 'Spread' = Max - Min) %>% knitr::kable()
-df_eff %>% group_by(Temp, Stirred) %>% summarise('Mean' = mean(Time), 'Var' = var(Time), 'Max' = max(Time), 'Min' = min(Time), 'Spread' = Max - Min) %>% knitr::kable()
+df_eff %>% group_by(Brand) %>% summarise('Mean' = mean(Time), 'Var' = var(Time),'Max' = max(Time), 'Min' = min(Time), 'Spread' = Max - Min) %>% knitr::kable(caption = 'Means by Brand')
+df_eff %>% group_by(Temp) %>% summarise('Mean' = mean(Time), 'Var' = var(Time), 'Max' = max(Time), 'Min' = min(Time), 'Spread' = Max - Min) %>% knitr::kable(caption = 'Means by Temperature')
+df_eff %>% group_by(Brand, Temp) %>% summarise('Mean' = mean(Time), 'Var' = var(Time), 'Max' = max(Time), 'Min' = min(Time), 'Spread' = Max - Min) %>% knitr::kable(caption = 'Means by Brand and Temperature')
+df_eff %>% group_by(Brand, Stirred) %>% summarise('Mean' = mean(Time), 'Var' = var(Time), 'Max' = max(Time), 'Min' = min(Time), 'Spread' = Max - Min) %>% knitr::kable(caption = 'Means by Brand and Stirring')
+df_eff %>% group_by(Temp, Stirred) %>% summarise('Mean' = mean(Time), 'Var' = var(Time), 'Max' = max(Time), 'Min' = min(Time), 'Spread' = Max - Min) %>% knitr::kable(caption = 'Means by Temperature and Stirring')
 knitr::kable(summary(means_eff), caption = "Least Squares Means")
 knitr::kable(confint(cont_str_brd), caption = "Contrast Stirred and Brand")
-knitr::kable(confint(cont_strbrd), caption = "Contrast Stirred versus Brand")
+knitr::kable(confint(cont_strbrd), caption = "Contrast Stirred Only and Brand Only")
 knitr::kable(confint(cont_temp), caption = "Contrast Temperatures")
 ```
 
@@ -705,6 +705,8 @@ plot(aov_eff, pch = 4)
 |Model|11|2328.174357|211.652214|183.21|<.0001|
 |Error|36|41.589732|1.155270|||
 |CorrectedTotal|47|2369.764090|||
+
+Table: Overall ANOVA Table
 
 Produced from the following code:  
 
