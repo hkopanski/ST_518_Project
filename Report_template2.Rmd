@@ -79,7 +79,7 @@ summarise('Min' = min(Time),
           'Max' = max(Time),
           'Range' = Max - Min,
           'Var' = var(Time), 
-          'n' = n())
+          'n' = n()) 
 
 means_table <- df_eff %>% group_by(Brand, Temp) %>% summarise('Mean' = mean(Time))
 means_table <- means_table %>% pivot_wider(names_from = Brand, values_from = Mean)
