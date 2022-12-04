@@ -508,7 +508,7 @@ knitr::kable(summary(aov_eff)[[1]], 'simple', digits = 3, caption = 'Model 1: AN
 
 The following hypothesis testing is based on the results of the Model 1 ANOVA table. All rejection criteria is based on rejecting $H_0$ when $F_{crit}$ < $F_{score}$:  
 
-**Full model ANOVA (see Appendix I, p. 14 for details):**  
+**Full model ANOVA (see Appendix I: Table 16 for details):**  
 $H_0: \mu_1 = \mu_2 =...=\mu_i= 0$\
 $H_a:$ Not all means are equal to zero.\
 $F_{score}$ = $\frac{MS[Treatment]}{MS(E)} = \frac{211.65}{1.155} = 183.21$\
